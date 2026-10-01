@@ -71,19 +71,32 @@
       <span class="track-meta">placeholder loop · royalty-free</span>
     </div>
     <div class="controls">
-      <button id="prev" title="Previous track" aria-label="Previous track">⏮</button>
-      <button id="play" title="Play / pause" aria-label="Play">▶</button>
-      <button id="next" title="Next track" aria-label="Next track">⏭</button>
+      <button id="prev" title="Previous track" aria-label="Previous track">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="play" title="Play / pause" aria-label="Play">
+        <svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M17 5v14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+      </button>
+      <button id="next" title="Next track" aria-label="Next track">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
       <button id="loop" title="Loop current track" aria-label="Loop current track" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12m-1.2 0a1.2 1.2 0 1 0 2.4 0a3.2 3.2 0 1 1 -6.4 0a5.6 5.6 0 1 1 11.2 0a8 8 0 0 1 -14.6 4.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3.2 12.6 L3.6 17.6 L8.2 15.6 Z" fill="currentColor"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19.5 10.5A7.5 7.5 0 0 0 6.3 7.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M5.5 3.5v4.5H10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4.5 13.5a7.5 7.5 0 0 0 13.2 3.3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M18.5 20.5V16H14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 12m-.6 0a.6.6 0 1 0 1.2 0a1.8 1.8 0 1 1 -3.6 0a3 3 0 1 1 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
       </button>
     </div>
     <div class="volume">
       <button id="mute" title="Mute" aria-label="Mute" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <g class="bell"><path d="M12 3a4.5 4.5 0 0 0-4.5 4.5v4L5.5 15.5h13L16.5 11.5v-4A4.5 4.5 0 0 0 12 3Z" fill="currentColor"/><circle cx="12" cy="18" r="2" fill="currentColor"/><path d="M12 1.2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></g>
-          <g class="waves" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path class="w1" d="M19.5 8.5q1.5 3.5 0 7"/><path class="w2" d="M22 6.5q2.5 5.5 0 11"/></g>
-          <path class="slash" d="M4 4 L20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          <g class="bell"><path d="M11 2.5h2M12 3.5a5 5 0 0 0-5 5v4.2L4.8 16.5h14.4L17 12.7V8.5a5 5 0 0 0-5-5Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M9.5 18.5a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></g>
+          <g class="waves" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path class="w1" d="M20.5 8.5q1.3 3.5 0 7"/><path class="w2" d="M23 6q2.3 6 0 12"/></g>
+          <path class="slash" d="M3 3 21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
         </svg>
       </button>
       <input id="vol" type="range" min="0" max="100" value="70" aria-label="Music volume">

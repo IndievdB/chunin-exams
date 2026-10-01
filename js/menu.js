@@ -128,7 +128,6 @@
   }
   function setPlaying(on) {
     player.classList.toggle("playing", on);
-    playBtn.textContent = on ? "❚❚" : "▶";
     playBtn.setAttribute("aria-label", on ? "Pause" : "Play");
   }
 

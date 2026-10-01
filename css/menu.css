@@ -16,7 +16,7 @@ html, body { height: 100%; }
 body {
   font-family: "Reggae One", "Noto Sans JP", system-ui, sans-serif;
   color: #fff; background: #0b1f2e; overflow: hidden;
-  display: grid; grid-template-rows: auto 1fr auto;
+  display: grid; grid-template-rows: auto 1fr; padding-bottom: 72px;
 }
 .bg {
   position: fixed; inset: 0; z-index: -2;
@@ -117,8 +117,8 @@ body {
 
 /* ---------- music player: compact strip bottom-right, on the dark fade ---------- */
 .player {
-  position: relative; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 18px;
-  padding: 10px 44px 14px; min-height: 64px;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+  padding: 10px 44px 14px; height: 72px; box-sizing: border-box;
   background: linear-gradient(transparent, rgba(0,0,0,.6) 50%);
   color: #fff; text-shadow: 2px 2px 0 #000;
   transition: background .3s;
@@ -126,6 +126,7 @@ body {
 /* collapsed: only the track name and equalizer peek out; everything else folds away */
 .player.mini { background: linear-gradient(transparent, rgba(0,0,0,.35) 60%); }
 .player .controls, .player .volume, .player .progress, .player .time { transition: opacity .25s, max-width .3s ease, margin .3s ease; max-width: 400px; overflow: hidden; }
+.player .controls, .player .volume { padding: 6px 2px; margin: -6px -2px; }
 .player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { opacity: 0; max-width: 0; margin-left: -18px; pointer-events: none; }
 .player.mini .now { opacity: .8; transform: scale(.9); transform-origin: right center; }
 .now { transition: opacity .25s, transform .25s; }
@@ -140,21 +141,24 @@ body {
 @keyframes eq { from { height: 4px } to { height: 16px } }
 .controls { display: flex; gap: 6px; }
 .controls button {
-  font: inherit; font-size: 13px; line-height: 1; width: 32px; height: 32px; cursor: pointer;
+  font: inherit; line-height: 1; width: 38px; height: 38px; padding: 0; cursor: pointer; display: grid; place-items: center;
   background: rgba(255,255,255,.12); color: #fff; border: 2px solid #fff; border-radius: 50%;
   text-shadow: none; transition: background .15s, transform .1s;
 }
 .controls button:hover { background: rgba(255,255,255,.3); transform: translateY(-1px); }
-.controls #play { background: var(--gold); color: #3b1a00; border-color: var(--gold); }
+.controls #play { background: var(--gold); color: #3b1a00; border-color: var(--gold); width: 44px; height: 44px; }
+.controls button svg { width: 22px; height: 22px; display: block; }
+.controls #play .ic-pause, .playing .controls #play .ic-play { display: none; }
+.playing .controls #play .ic-pause { display: block; }
 .controls #loop[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #3b1a00; }
-.controls #loop svg, .volume #mute svg { width: 18px; height: 18px; display: block; margin: auto; }
+.controls #loop svg, .volume #mute svg { width: 24px; height: 24px; display: block; }
 .volume #mute .slash { display: none; }
 .volume #mute[aria-pressed="true"] .slash { display: block; }
 .volume #mute[aria-pressed="true"] .waves { display: none; }
 .volume #mute.low .w2 { display: none; }
 .volume #mute.silent .waves { display: none; }
 .volume { display: flex; align-items: center; gap: 6px; }
-.volume button { font: inherit; font-size: 13px; line-height: 1; width: 32px; height: 32px; cursor: pointer; background: rgba(255,255,255,.12); color: #fff; border: 2px solid #fff; border-radius: 50%; text-shadow: none; transition: background .15s; }
+.volume button { font: inherit; line-height: 1; width: 38px; height: 38px; padding: 0; cursor: pointer; display: grid; place-items: center; background: rgba(255,255,255,.12); color: #fff; border: 2px solid #fff; border-radius: 50%; text-shadow: none; transition: background .15s; }
 .volume button:hover { background: rgba(255,255,255,.3); }
 .volume input { -webkit-appearance: none; appearance: none; width: 90px; height: 6px; background: rgba(255,255,255,.3); border-radius: 3px; outline: none; cursor: pointer; }
 .volume input::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid #3b1a00; }
@@ -191,7 +195,8 @@ body {
   .menu { align-items: center; padding: 0; }
   .cloud.c2, .cloud.c3 { display: none; }
   .cloud.c1 { left: auto; right: 2vw; top: 1%; width: 90px; }
-  .player { flex-wrap: wrap; justify-content: center; gap: 10px 16px; padding: 12px 16px; }
+  body { padding-bottom: 150px; }
+  .player { flex-wrap: wrap; justify-content: center; gap: 10px 16px; padding: 12px 16px; height: auto; }
   .player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { max-width: 400px; opacity: 1; margin-left: 0; pointer-events: auto; } /* no hover on touch: always full */
   .uc-card { grid-template-columns: 1fr; }
   .volume input { width: 70px; }
