@@ -74,25 +74,26 @@ body {
 
 .blurb { font-size: clamp(16px, 1.5vw, 22px); font-weight: 700; color: #ffe9a8; text-align: center; text-shadow: 2px 2px 0 #000, 0 0 10px #000; max-width: 40ch; }
 .go {
+  display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--display); font-size: clamp(20px, 2vw, 28px); letter-spacing: 2px;
-  color: #3b1a00; background: var(--gold); padding: 6px 26px; border-radius: 999px; text-decoration: none;
-  border: 3px solid #3b1a00; box-shadow: 0 4px 0 #3b1a00; transition: transform .15s;
+  color: var(--gold); background: rgba(0,0,0,.75); padding: 6px 28px 6px 8px; border-radius: 999px; text-decoration: none;
+  border: 3px solid var(--gold); box-shadow: 0 4px 0 rgba(0,0,0,.6); transition: transform .15s, background .15s;
 }
-.go:hover { transform: translateY(-2px); }
-.go span { display: inline-block; transition: transform .2s; }
-.go:hover span { transform: translateX(6px); }
+.go:hover { transform: translateY(-2px); background: rgba(0,0,0,.9); }
+.go i { display: grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--red); color: #fff; font-style: normal; font-size: .95em; border: 2px solid #ffd54a; transition: transform .2s; }
+.go:hover i { transform: rotate(-12deg) scale(1.1); }
 
 /* ---------- decorative clouds: drift across and fade in/out ---------- */
-.cloud { position: absolute; z-index: 1; pointer-events: none; opacity: 0; --flip: 1;
+.cloud { position: absolute; z-index: 1; pointer-events: none; opacity: 0; --flip: 1; --dir: 1;
   filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); animation: cloudDrift var(--dur) linear infinite; animation-delay: var(--delay); }
 .cloud.c1 { left: 0; top: 9%; width: clamp(110px, 12vw, 190px); --dur: 26s; --delay: -6s; }
-.cloud.c2 { right: 4vw; top: 9%; width: clamp(90px, 9vw, 150px); --flip: -1; --dur: 32s; --delay: -20s; }
+.cloud.c2 { right: 4vw; top: 9%; width: clamp(90px, 9vw, 150px); --flip: -1; --dir: -1; --dur: 32s; --delay: -20s; }
 .cloud.c3 { left: 40%; bottom: 14%; width: clamp(80px, 8vw, 130px); --dur: 22s; --delay: -12s; }
 @keyframes cloudDrift {
-  0%   { opacity: 0;  transform: translate(-60px, 10px) scaleX(var(--flip)); }
+  0%   { opacity: 0;  transform: translate(calc(-60px * var(--dir)), 10px) scaleX(var(--flip)); }
   18%  { opacity: .92; }
   82%  { opacity: .92; }
-  100% { opacity: 0;  transform: translate(80px, -14px) scaleX(var(--flip)); }
+  100% { opacity: 0;  transform: translate(calc(80px * var(--dir)), -14px) scaleX(var(--flip)); }
 }
 
 /* ---------- menu (right rail, gently tilted) ---------- */

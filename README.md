@@ -36,13 +36,16 @@ Until an image exists, the site shows an illustrated placeholder that names the 
 
 The player at the bottom of the menu reads its playlist from `PLAYLIST` in `js/menu.js`. The three tracks in `assets/music/` are short synthesized placeholder loops made for this prototype (royalty-free, no attribution needed). To use real music, drop the files into `assets/music/` and update the titles and paths in the playlist. Browsers only start audio after the first click or key press on the page.
 
-## Publishing on GitHub Pages
+## Publishing on Render (free tier)
 
-1. Merge into the branch you want to publish (e.g. `main`).
-2. In the repo, go to **Settings → Pages → Build and deployment**, choose **Deploy from a branch**, and select that branch with the `/ (root)` folder.
-3. The site will be live at `https://<user>.github.io/chunin-exams/`.
+The repo includes a `render.yaml` blueprint that describes the site as a Render **Static Site** (no build step, publish the repo root).
 
-All paths are relative, so the site works from the project subpath. The `.nojekyll` file stops GitHub from running Jekyll on the site.
+1. Push to `main`.
+2. In the Render dashboard choose **New → Blueprint**, pick this repository, and click **Apply**. Render reads `render.yaml` and creates the `hidden-leaf` static site.
+   (Alternatively, **New → Static Site**, select the repo, leave the build command empty and set the publish directory to `.`.)
+3. Render gives you a `https://hidden-leaf.onrender.com`-style URL and redeploys automatically on every push to `main`.
+
+Static sites on Render's free tier are served from a CDN and don't spin down, so there's no cold start. All paths are relative, so the site also works under any subpath.
 
 ## Local preview
 
