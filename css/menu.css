@@ -140,6 +140,13 @@ body {
 .controls button:hover { background: rgba(255,255,255,.3); transform: translateY(-1px); }
 .controls #play { background: var(--gold); color: #3b1a00; border-color: var(--gold); }
 .controls #loop[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+.volume { display: flex; align-items: center; gap: 6px; }
+.volume button { font: inherit; font-size: 13px; line-height: 1; width: 32px; height: 32px; cursor: pointer; background: rgba(255,255,255,.12); color: #fff; border: 2px solid #fff; border-radius: 50%; text-shadow: none; transition: background .15s; }
+.volume button:hover { background: rgba(255,255,255,.3); }
+.volume input { -webkit-appearance: none; appearance: none; width: 90px; height: 6px; background: rgba(255,255,255,.3); border-radius: 3px; outline: none; cursor: pointer; }
+.volume input::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid #3b1a00; }
+.volume input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid #3b1a00; }
+.volume input::-moz-range-progress { background: var(--gold); height: 6px; border-radius: 3px; }
 .progress { width: 160px; height: 6px; background: rgba(255,255,255,.3); border-radius: 3px; overflow: hidden; cursor: pointer; }
 .progress .bar { height: 100%; width: 0; background: var(--gold); }
 .time { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; }
@@ -153,6 +160,7 @@ body {
   .cloud.c2, .cloud.c3 { display: none; }
   .cloud.c1 { left: auto; right: 2vw; top: 1%; width: 90px; }
   .player { flex-wrap: wrap; justify-content: center; gap: 10px 16px; padding: 12px 16px; }
+  .volume input { width: 70px; }
   .time { display: none; }
   .progress { width: 100%; }
 }

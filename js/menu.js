@@ -8,11 +8,12 @@
   var items = Array.prototype.slice.call(document.querySelectorAll(".menu a"));
   var current = null;
   var swapTimer = null;
+  var masterVolume = function () { return 1; }; // replaced once the player is set up
 
   // woodblock sound effects: clone so rapid hovers can overlap
   function sfx(id, vol) {
     var a = document.getElementById(id).cloneNode();
-    a.volume = vol;
+    a.volume = vol * masterVolume();
     a.play().catch(function () {});
   }
 
@@ -88,6 +89,8 @@
   var progress = document.getElementById("progress");
   var timeEl = document.getElementById("time");
   var track = 0;
+  var muteBtn = document.getElementById("mute");
+  var volSlider = document.getElementById("vol");
 
   function fmt(s) {
     if (!isFinite(s)) return "0:00";
@@ -134,6 +137,30 @@
     if (e.key === "ArrowRight") audio.currentTime += 5;
     if (e.key === "ArrowLeft") audio.currentTime -= 5;
   });
+
+  /* volume: slider + mute, remembered between visits */
+  var savedVol = 0.7;
+  try { savedVol = parseFloat(localStorage.getItem("volume")); if (!(savedVol >= 0 && savedVol <= 1)) savedVol = 0.7; } catch (e) {}
+  function updateMuteIcon() {
+    var v = audio.volume;
+    muteBtn.textContent = audio.muted || v === 0 ? "🔇" : v < 0.5 ? "🔉" : "🔊";
+    muteBtn.setAttribute("aria-pressed", String(audio.muted));
+    muteBtn.setAttribute("aria-label", audio.muted ? "Unmute" : "Mute");
+  }
+  function applyVolume(v) {
+    audio.volume = v;
+    volSlider.value = Math.round(v * 100);
+    if (v > 0) audio.muted = false;   // dragging the slider un-mutes
+    updateMuteIcon();
+    try { localStorage.setItem("volume", String(v)); } catch (e) {}
+  }
+  masterVolume = function () { return audio.muted ? 0 : audio.volume; };
+  volSlider.addEventListener("input", function () { applyVolume(volSlider.value / 100); });
+  muteBtn.addEventListener("click", function () {
+    audio.muted = !audio.muted;
+    updateMuteIcon();
+  });
+  applyVolume(savedVol);
 
   // Browsers block autoplay until the page is touched, so the first click
   // or key anywhere starts the music.
