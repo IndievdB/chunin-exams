@@ -9,6 +9,13 @@
   var current = null;
   var swapTimer = null;
 
+  // woodblock sound effects: clone so rapid hovers can overlap
+  function sfx(id, vol) {
+    var a = document.getElementById(id).cloneNode();
+    a.volume = vol;
+    a.play().catch(function () {});
+  }
+
   function build(text) {
     title.innerHTML = "";
     var i = 0;
@@ -29,6 +36,7 @@
 
   function select(item, instant) {
     if (item === current) return;
+    if (!instant) sfx("sfx-hover", 0.5);
     current = item;
     items.forEach(function (a) { a.classList.toggle("active", a === item); });
     go.href = item.href;
@@ -48,14 +56,17 @@
   items.forEach(function (a) {
     a.addEventListener("mouseenter", function () { select(a); });
     a.addEventListener("focus", function () { select(a); });
+    a.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   });
+  go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       step(e.key === "ArrowDown" ? 1 : -1);
     } else if (e.key === "Enter" && current && document.activeElement.tagName !== "BUTTON") {
-      location.href = current.href;
+      sfx("sfx-select", 0.8);
+      setTimeout(function () { location.href = current.href; }, 150);
     }
   });
   select(items[0], true);
