@@ -5,7 +5,7 @@
   var title = document.querySelector(".title");
   var blurb = document.querySelector(".blurb");
   var go = document.querySelector(".go");
-  var splat = document.querySelector(".splat");
+  var arrows = { up: document.getElementById("arrow-up"), down: document.getElementById("arrow-down") };
   var items = Array.prototype.slice.call(document.querySelectorAll(".menu a"));
   var current = null;
   var swapTimer = null;
@@ -18,12 +18,9 @@
       line.className = "line";
       Array.prototype.forEach.call(lineText, function (c) {
         var ch = document.createElement("span");
-        ch.className = "ch" + (c === " " ? " space" : "");
-        ch.textContent = c === " " ? " " : c;
-        // each letter gets its own tilt, lift, and entry delay
-        ch.style.setProperty("--r", ((i % 2 ? 1 : -1) * (3 + (i * 7) % 6)) + "deg");
-        ch.style.setProperty("--dy", (((i * 13) % 5) - 2) * 0.03 + "em");
-        ch.style.setProperty("--d", (i * 45) + "ms");
+        ch.className = "ch";
+        ch.textContent = c;
+        ch.style.setProperty("--d", (i * 40) + "ms"); // staggered brush-in
         line.appendChild(ch);
         i++;
       });
@@ -33,35 +30,35 @@
 
   function select(item, instant) {
     if (item === current) return;
+    var dir = items.indexOf(item) > items.indexOf(current) ? "down" : "up";
     current = item;
     items.forEach(function (a) { a.classList.toggle("active", a === item); });
     go.href = item.href;
     blurb.textContent = item.dataset.blurb;
     clearTimeout(swapTimer);
 
-    var swap = function () {
-      build(item.dataset.title);
-      title.classList.remove("out");
-      splat.classList.remove("pop");
-      void splat.offsetWidth;
-      splat.classList.add("pop");
-    };
+    var swap = function () { build(item.dataset.title); title.classList.remove("out"); };
     if (instant || !title.children.length) { swap(); return; }
-    title.classList.add("out");           // fling the old letters away...
-    swapTimer = setTimeout(swap, 180);     // ...then slam the new ones in
+    arrows[dir].classList.remove("bump"); void arrows[dir].offsetWidth; arrows[dir].classList.add("bump");
+    title.classList.add("out");           // old letters wash out...
+    swapTimer = setTimeout(swap, 160);     // ...new ones brush in
+  }
+  function step(delta) {
+    var idx = (items.indexOf(current) + delta + items.length) % items.length;
+    select(items[idx]);
   }
 
-  items.forEach(function (a, idx) {
+  items.forEach(function (a) {
     a.addEventListener("mouseenter", function () { select(a); });
     a.addEventListener("focus", function () { select(a); });
   });
+  arrows.up.addEventListener("click", function () { step(-1); });
+  arrows.down.addEventListener("click", function () { step(1); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
-    var idx = items.indexOf(current);
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
-      idx = (idx + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
-      items[idx].focus();
+      step(e.key === "ArrowDown" ? 1 : -1);
     } else if (e.key === "Enter" && current && document.activeElement.tagName !== "BUTTON") {
       location.href = current.href;
     }
