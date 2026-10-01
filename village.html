@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hidden Leaf Village</title>
+  <meta name="description" content="Explore the Hidden Leaf Village: ninja training, the Chūnin Exams, missions, and the Might Guy scroll hall.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shojumaru&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Back to village select">
+      <svg class="leaf-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#leaf-symbol"/></svg>
+      <span>Hidden Leaf</span>
+    </a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
+      <span class="sr-only">Menu</span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="Village locations">
+      <a href="#village">Village Gate</a>
+      <a href="#training">Ninja Training</a>
+      <a href="#exams">Chūnin Exams</a>
+      <a href="#missions">Missions</a>
+      <a href="#academy">Academy</a>
+      <a href="#guy">Might Guy's Hall</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ VILLAGE (home) ============ -->
+    <section class="location" id="village" data-title="Village Gate">
+      <div class="scene" data-image="locations/konoha.jpg" data-scene="village">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="mountain"></div>
+          <div class="rooftops"></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">木ノ葉隠れの里</p>
+          <h1>Welcome to the Hidden Leaf Village</h1>
+          <p>Choose a destination on the map or from the menu. Every corner of the village holds a scroll worth reading.</p>
+        </div>
+      </div>
+
+      <div class="village-map" role="list" aria-label="Village map">
+        <a role="listitem" class="map-pin" href="#training" style="--x:18%;--y:30%">
+          <span class="pin-icon">🥋</span><span class="pin-label">Training Grounds</span>
+        </a>
+        <a role="listitem" class="map-pin" href="#exams" style="--x:78%;--y:24%">
+          <span class="pin-icon">📜</span><span class="pin-label">Exam Arena</span>
+        </a>
+        <a role="listitem" class="map-pin" href="#missions" style="--x:50%;--y:16%">
+          <span class="pin-icon">🏯</span><span class="pin-label">Hokage Tower</span>
+        </a>
+        <a role="listitem" class="map-pin" href="#academy" style="--x:32%;--y:68%">
+          <span class="pin-icon">🏫</span><span class="pin-label">Ninja Academy</span>
+        </a>
+        <a role="listitem" class="map-pin" href="#guy" style="--x:70%;--y:66%">
+          <span class="pin-icon">💪</span><span class="pin-label">Might Guy's Hall</span>
+        </a>
+      </div>
+
+      <div class="scroll-rack">
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">The Will of Fire</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <p>The village is more than walls and rooftops. It is every shinobi who protects it, every teacher who passes knowledge forward, and every student who refuses to give up.</p>
+            <p>Travel the village, unroll the scrolls, and prepare yourself for the trials ahead.</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">How to Explore</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <ul>
+              <li><strong>Ninja Training</strong> — the training grounds and the bell test.</li>
+              <li><strong>Chūnin Exams</strong> — the written test, the Forest of Death, and the finals.</li>
+              <li><strong>Missions</strong> — the mission desk at Hokage Tower, ranks D through S.</li>
+              <li><strong>Academy</strong> — where every ninja begins.</li>
+              <li><strong>Might Guy's Hall</strong> — scrolls and portraits of the Noble Blue Beast.</li>
+            </ul>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ TRAINING ============ -->
+    <section class="location" id="training" data-title="Ninja Training" hidden>
+      <div class="scene" data-image="locations/training-ground.jpg" data-scene="training">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="treeline"></div>
+          <div class="posts"><span></span><span></span><span></span></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">演習場</p>
+          <h1>Training Grounds</h1>
+          <p>Three wooden posts, a river, and a memorial stone. Many legends began here.</p>
+        </div>
+      </div>
+
+      <div class="scroll-rack">
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">The Bell Test</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <p>Two bells. Three students. One jōnin who has no intention of losing.</p>
+            <p>The real lesson isn't how to take a bell — it's discovering that no one passes alone. Teamwork above all.</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Chakra Control</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <ol>
+              <li><strong>Leaf concentration</strong> — hold a leaf to your forehead with chakra alone.</li>
+              <li><strong>Tree climbing</strong> — walk up a trunk using only your feet.</li>
+              <li><strong>Water walking</strong> — stand on the surface of the river.</li>
+            </ol>
+            <p>Master all three before attempting advanced jutsu.</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Taijutsu Regimen</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <p>Not every ninja can mold ninjutsu — but anyone can train. A daily regimen from the hall of hard work:</p>
+            <ul>
+              <li>500 laps around the village</li>
+              <li>1,000 push-ups (on fingertips)</li>
+              <li>1,000 squats with weights</li>
+              <li>Kick the training post until sunset</li>
+            </ul>
+            <p class="stamp">If you can't finish, double it tomorrow!</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+      </div>
+      <div class="gallery" data-gallery="training"></div>
+    </section>
+
+    <!-- ============ EXAMS ============ -->
+    <section class="location" id="exams" data-title="Chūnin Exams" hidden>
+      <div class="scene" data-image="locations/exam-arena.jpg" data-scene="exams">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="arena"></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">中忍選抜試験</p>
+          <h1>The Chūnin Exams</h1>
+          <p>Genin from every allied village gather to test their strength, intelligence, and resolve.</p>
+        </div>
+      </div>
+
+      <ol class="stages">
+        <li class="stage">
+          <span class="stage-num">一</span>
+          <h2>The Written Test</h2>
+          <p>Ten questions. Proctors on every row. Get caught cheating clumsily three times and your whole team fails — but the true test is the tenth question.</p>
+        </li>
+        <li class="stage">
+          <span class="stage-num">二</span>
+          <h2>The Forest of Death</h2>
+          <p>Training Ground 44. Five days to secure both a Heaven and Earth scroll and reach the central tower. Don't open the scrolls early.</p>
+        </li>
+        <li class="stage">
+          <span class="stage-num">三</span>
+          <h2>The Final Tournament</h2>
+          <p>One-on-one matches before the village, its lords, and the Kage. Victory isn't required — showing you can lead is.</p>
+        </li>
+      </ol>
+
+      <div class="exam-quiz scroll open-always">
+        <div class="scroll-rod" aria-hidden="true">Practice Exam — Question 10</div>
+        <div class="scroll-paper"><div class="scroll-inner">
+          <p>Before you see the final question, you must decide: take it, and if you answer wrong you remain genin forever. Or walk away now, and your team fails this year.</p>
+          <div class="quiz-actions">
+            <button class="btn" data-quiz="take">I'll take it</button>
+            <button class="btn ghost" data-quiz="leave">Walk away</button>
+          </div>
+          <p class="quiz-result" aria-live="polite"></p>
+        </div></div>
+        <div class="scroll-rod bottom" aria-hidden="true"></div>
+      </div>
+      <div class="gallery" data-gallery="exams"></div>
+    </section>
+
+    <!-- ============ MISSIONS ============ -->
+    <section class="location" id="missions" data-title="Missions" hidden>
+      <div class="scene" data-image="locations/hokage-tower.jpg" data-scene="missions">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="mountain"></div>
+          <div class="tower"></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">任務受付所</p>
+          <h1>Mission Assignment Desk</h1>
+          <p>Hokage Tower. Pick a rank, draw a mission scroll, and report back when it's done.</p>
+        </div>
+      </div>
+
+      <div class="rank-tabs" role="tablist" aria-label="Mission rank">
+        <button role="tab" aria-selected="true" data-rank="D">D-Rank</button>
+        <button role="tab" aria-selected="false" data-rank="C">C-Rank</button>
+        <button role="tab" aria-selected="false" data-rank="B">B-Rank</button>
+        <button role="tab" aria-selected="false" data-rank="A">A-Rank</button>
+        <button role="tab" aria-selected="false" data-rank="S">S-Rank</button>
+      </div>
+
+      <div class="mission-board">
+        <div class="scroll open-always mission-scroll">
+          <div class="scroll-rod" aria-hidden="true"><span class="mission-rank">D</span>-Rank Mission</div>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <h2 class="mission-title"></h2>
+            <p class="mission-desc"></p>
+            <dl class="mission-meta">
+              <div><dt>Client</dt><dd class="mission-client"></dd></div>
+              <div><dt>Reward</dt><dd class="mission-reward"></dd></div>
+            </dl>
+            <div class="quiz-actions">
+              <button class="btn" id="draw-mission">Draw another scroll</button>
+              <button class="btn ghost" id="accept-mission">Accept mission</button>
+            </div>
+            <p class="mission-status" aria-live="polite"></p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </div>
+        <aside class="mission-log">
+          <h2>Mission Log</h2>
+          <ul id="mission-log-list"><li class="empty">No missions accepted yet.</li></ul>
+        </aside>
+      </div>
+      <div class="gallery" data-gallery="missions"></div>
+    </section>
+
+    <!-- ============ ACADEMY ============ -->
+    <section class="location" id="academy" data-title="Ninja Academy" hidden>
+      <div class="scene" data-image="locations/academy.jpg" data-scene="academy">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="schoolhouse"></div>
+          <div class="swing"></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">忍者学校</p>
+          <h1>Ninja Academy</h1>
+          <p>Every shinobi of the Leaf starts here, with a forehead protector still to be earned.</p>
+        </div>
+      </div>
+      <div class="scroll-rack">
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Curriculum</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <ul>
+              <li>Shuriken and kunai accuracy</li>
+              <li>The Transformation Technique</li>
+              <li>The Substitution Technique</li>
+              <li>The Clone Technique (graduation exam)</li>
+              <li>History of the village and its Hokage</li>
+            </ul>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Hand Signs</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <p>The twelve hand signs, one for each animal of the zodiac:</p>
+            <p class="signs">子 Rat · 丑 Ox · 寅 Tiger · 卯 Hare · 辰 Dragon · 巳 Snake · 午 Horse · 未 Ram · 申 Monkey · 酉 Bird · 戌 Dog · 亥 Boar</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+      </div>
+      <div class="gallery" data-gallery="academy"></div>
+    </section>
+
+    <!-- ============ MIGHT GUY ============ -->
+    <section class="location" id="guy" data-title="Might Guy's Hall" hidden>
+      <div class="scene" data-image="locations/guy-hall.jpg" data-scene="guy">
+        <div class="scene-art" aria-hidden="true">
+          <div class="sunset"></div>
+          <div class="waves"></div>
+        </div>
+        <div class="scene-caption">
+          <p class="kicker">木ノ葉の気高き碧い猛獣</p>
+          <h1>The Noble Blue Beast</h1>
+          <p>Might Guy — taijutsu master, eternal rival, and the loudest believer in the Springtime of Youth.</p>
+        </div>
+      </div>
+
+      <div class="scroll-rack">
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Who Is Might Guy?</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <p>A jōnin of the Hidden Leaf and leader of Team Guy. Unable to excel at ninjutsu or genjutsu, he poured everything into taijutsu — and became one of the strongest fighters the village has ever produced.</p>
+            <p>He's known for his green jumpsuit, his blinding smile, and a rivalry he counts in wins and losses with obsessive care.</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">The Eight Gates</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <ol class="gates">
+              <li>Gate of Opening</li>
+              <li>Gate of Healing</li>
+              <li>Gate of Life</li>
+              <li>Gate of Pain</li>
+              <li>Gate of Limit</li>
+              <li>Gate of View</li>
+              <li>Gate of Wonder</li>
+              <li>Gate of Death</li>
+            </ol>
+            <p>Each gate removes a limiter on the body's chakra flow. Every gate opened is power gained — at a terrible price.</p>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+        <article class="scroll">
+          <button class="scroll-rod" aria-expanded="false">Rules of Youth</button>
+          <div class="scroll-paper"><div class="scroll-inner">
+            <ul>
+              <li>Hard work beats natural talent.</li>
+              <li>If you fail a goal, set a harder penalty and try again.</li>
+              <li>A rival is a gift.</li>
+              <li>Protect your students with your life.</li>
+            </ul>
+          </div></div>
+          <div class="scroll-rod bottom" aria-hidden="true"></div>
+        </article>
+      </div>
+
+      <div class="youth-meter">
+        <button class="btn big" id="youth-btn">🔥 Ignite the Springtime of Youth!</button>
+        <p>Youth count: <strong id="youth-count">0</strong></p>
+      </div>
+
+      <h2 class="gallery-title">Portrait Gallery</h2>
+      <div class="gallery" data-gallery="guy"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>NARUTO © Masashi Kishimoto / SHUEISHA. Presented with VIZ Media.</p>
+  </footer>
+
+  <!-- Shared SVG symbols -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="leaf-symbol" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round">
+        <path d="M50 52 m-4 0 a4 4 0 1 1 8 0 a10 10 0 0 1 -18 0 a16 16 0 0 1 32 0 a22 22 0 0 1 -44 0 a28 28 0 0 1 50 -16"/>
+        <path d="M74 32 L88 18 M74 32 L80 52"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <script src="js/images.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 # Hidden Leaf Village — Naruto fan site
 
-A static website themed around the Hidden Leaf Village (Konoha). It needs no build step. It opens on the village gate with a clickable village map, and the menu leads to different parts of the village:
+A static website themed around the Hidden Leaf Village (Konoha). It needs no build step.
+
+`index.html` is the game-style **Village Select** menu: tilted menu items, a big title that re-animates letter by letter as you hover, and a music player along the bottom. Each item opens a part of the village in `village.html`:
 
 | Menu | Location | What's there |
 |---|---|---|
@@ -29,6 +31,10 @@ assets/images/locations/guy-hall.jpg        Might Guy's Hall
 **Gallery images**, including the six Might Guy portraits, are listed in `js/images.js`, each with a caption.
 
 Until an image exists, the site shows an illustrated placeholder that names the file path it's waiting for. Once you add the file, it shows up automatically. Wide images (about 1600×600) work best for backgrounds, and 4:3 works best for gallery images.
+
+## Music
+
+The player at the bottom of the menu reads its playlist from `PLAYLIST` in `js/menu.js`. The three tracks in `assets/music/` are short synthesized placeholder loops made for this prototype (royalty-free, no attribution needed). To use real music, drop the files into `assets/music/` and update the titles and paths in the playlist. Browsers only start audio after the first click or key press on the page.
 
 ## Publishing on GitHub Pages
 
