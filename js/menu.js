@@ -5,7 +5,6 @@
   var title = document.querySelector(".title");
   var blurb = document.querySelector(".blurb");
   var go = document.querySelector(".go");
-  var arrows = { up: document.getElementById("arrow-up"), down: document.getElementById("arrow-down") };
   var items = Array.prototype.slice.call(document.querySelectorAll(".menu a"));
   var current = null;
   var swapTimer = null;
@@ -30,7 +29,6 @@
 
   function select(item, instant) {
     if (item === current) return;
-    var dir = items.indexOf(item) > items.indexOf(current) ? "down" : "up";
     current = item;
     items.forEach(function (a) { a.classList.toggle("active", a === item); });
     go.href = item.href;
@@ -39,7 +37,6 @@
 
     var swap = function () { build(item.dataset.title); title.classList.remove("out"); };
     if (instant || !title.children.length) { swap(); return; }
-    arrows[dir].classList.remove("bump"); void arrows[dir].offsetWidth; arrows[dir].classList.add("bump");
     title.classList.add("out");           // old letters wash out...
     swapTimer = setTimeout(swap, 160);     // ...new ones brush in
   }
@@ -52,8 +49,6 @@
     a.addEventListener("mouseenter", function () { select(a); });
     a.addEventListener("focus", function () { select(a); });
   });
-  arrows.up.addEventListener("click", function () { step(-1); });
-  arrows.down.addEventListener("click", function () { step(1); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {

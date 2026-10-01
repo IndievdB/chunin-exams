@@ -20,10 +20,16 @@ body {
 }
 .bg {
   position: fixed; inset: 0; z-index: -2;
-  background: url(../assets/images/locations/konoha.jpg) center / cover no-repeat;
-  animation: drift 40s ease-in-out infinite alternate;
+  background: url(../assets/images/locations/konoha-wide.jpg) center / cover no-repeat;
+  animation: sway 36s ease-in-out infinite;
 }
-@keyframes drift { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.1) translate(-1.5%, -1%); } }
+/* slow sway: the art is extended past the frame so the edges never show */
+@keyframes sway {
+  0%   { transform: scale(1.06) translate(0, 0) rotate(0deg); }
+  30%  { transform: scale(1.09) translate(-1.6%, .7%) rotate(.35deg); }
+  60%  { transform: scale(1.07) translate(1.2%, -.6%) rotate(-.3deg); }
+  100% { transform: scale(1.06) translate(0, 0) rotate(0deg); }
+}
 .ink { /* soft blue wash on the left so the title reads */
   position: fixed; inset: 0; z-index: -1;
   background: linear-gradient(90deg, rgba(5,30,50,.6), rgba(5,30,50,.2) 45%, transparent 65%);
@@ -43,19 +49,8 @@ body {
 /* ---------- stage ---------- */
 .stage { position: relative; display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; padding: 0 5vw; }
 
-/* selector: swirl arrow, title, swirl arrow */
+/* selector: title, blurb, enter */
 .hero { position: relative; z-index: 2; display: grid; justify-items: center; gap: 14px; padding: 0 4vw; }
-.arrow { position: relative; width: 56px; height: 56px; padding: 0; border: 0; background: none; cursor: pointer; filter: drop-shadow(2px 3px 0 #7a2e00); transition: transform .2s; }
-.arrow:hover { transform: scale(1.15); }
-.arrow::after { content: ""; position: absolute; inset: 10px; border-radius: 50%;
-  background: radial-gradient(circle, #ff8a00 0 7px, #ffcf3d 8px 15px, transparent 16px); }
-.arrow::before { content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0;
-  border-left: 28px solid transparent; border-right: 28px solid transparent; }
-.arrow.up::before { top: -16px; border-bottom: 26px solid #ff5a00; }
-.arrow.down::before { bottom: -16px; border-top: 26px solid #ff5a00; }
-.arrow.bump { animation: bump .3s ease-out; }
-@keyframes bump { 50% { transform: scale(1.3); } }
-
 .title {
   font-family: var(--brush); font-weight: 400; line-height: .95; text-align: center;
   font-size: clamp(56px, 9vw, 136px); letter-spacing: 1px;
@@ -87,11 +82,18 @@ body {
 .go span { display: inline-block; transition: transform .2s; }
 .go:hover span { transform: translateX(6px); }
 
-/* ---------- decorative clouds ---------- */
-.cloud { position: absolute; z-index: 1; pointer-events: none; opacity: .92; filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); }
-.cloud.c1 { left: 0; top: 9%; width: clamp(110px, 12vw, 190px); }
-.cloud.c2 { right: 4vw; top: 9%; width: clamp(90px, 9vw, 150px); transform: scaleX(-1); opacity: .8; }
-.cloud.c3 { left: 40%; bottom: 14%; width: clamp(80px, 8vw, 130px); opacity: .7; }
+/* ---------- decorative clouds: drift across and fade in/out ---------- */
+.cloud { position: absolute; z-index: 1; pointer-events: none; opacity: 0; --flip: 1;
+  filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); animation: cloudDrift var(--dur) linear infinite; animation-delay: var(--delay); }
+.cloud.c1 { left: 0; top: 9%; width: clamp(110px, 12vw, 190px); --dur: 26s; --delay: -6s; }
+.cloud.c2 { right: 4vw; top: 9%; width: clamp(90px, 9vw, 150px); --flip: -1; --dur: 32s; --delay: -20s; }
+.cloud.c3 { left: 40%; bottom: 14%; width: clamp(80px, 8vw, 130px); --dur: 22s; --delay: -12s; }
+@keyframes cloudDrift {
+  0%   { opacity: 0;  transform: translate(-60px, 10px) scaleX(var(--flip)); }
+  18%  { opacity: .92; }
+  82%  { opacity: .92; }
+  100% { opacity: 0;  transform: translate(80px, -14px) scaleX(var(--flip)); }
+}
 
 /* ---------- menu (right rail, gently tilted) ---------- */
 .menu { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(4px, 1vh, 14px); padding-right: 3vw; }
@@ -155,5 +157,6 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .bg { animation: none; }
-  .title .ch, .arrow.bump { animation-duration: .01s !important; }
+  .title .ch { animation-duration: .01s !important; }
+  .cloud { animation: none; opacity: .9; }
 }
