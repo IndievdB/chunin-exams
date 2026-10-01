@@ -20,7 +20,7 @@ body {
 }
 .bg {
   position: fixed; inset: 0; z-index: -2;
-  background: url(../assets/images/locations/konoha-wide.jpg) center / cover no-repeat;
+  background: url(../assets/images/locations/konoha-wide.jpg) center bottom / cover no-repeat;
   animation: sway 36s ease-in-out infinite;
 }
 /* slow sway: the art is extended past the frame so the edges never show */
@@ -118,7 +118,7 @@ body {
 .player {
   position: relative; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 18px;
   padding: 10px 44px 14px; min-height: 64px;
-  background: linear-gradient(transparent, rgba(0,0,0,.78) 40%);
+  background: linear-gradient(transparent, rgba(0,0,0,.6) 50%);
   color: #fff; text-shadow: 2px 2px 0 #000;
 }
 .player-rod { display: none; }
