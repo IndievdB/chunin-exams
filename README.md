@@ -34,6 +34,18 @@ assets/images/locations/guy-hall.jpg        Might Guy's Hall
 
 Until an image exists, the site shows an illustrated placeholder that names the file path it's waiting for. Once you add the file, it shows up automatically. Wide images (about 1600×600) work best for backgrounds, and 4:3 works best for gallery images.
 
+## Shinobi accounts (Firebase)
+
+On first visit the site asks for a Shinobi name and clan. Identity comes from **Firebase Anonymous Auth** (no password; one account per browser) and the profile is stored in Firestore at `shinobi/{uid}`, so it syncs live and survives reloads. Click your name in the ribbon to change it.
+
+Setup:
+1. Create a project at console.firebase.google.com and add a **Web app**; copy its `firebaseConfig`.
+2. Paste it into `js/firebase-config.js` (replace `null`).
+3. In **Build → Authentication → Sign-in method**, enable **Anonymous**.
+4. In **Build → Firestore Database**, create a database, then paste `firestore.rules` into the **Rules** tab and publish.
+
+Until a config is present the site runs in offline mode and keeps the profile in the browser's local storage. Both fit comfortably in Firebase's free Spark plan.
+
 ## Music
 
 The player at the bottom of the menu reads its playlist from `PLAYLIST` in `js/menu.js`. The three tracks in `assets/music/` are short synthesized placeholder loops made for this prototype (royalty-free, no attribution needed). To use real music, drop the files into `assets/music/` and update the titles and paths in the playlist. Browsers only start audio after the first click or key press on the page.

@@ -23,6 +23,7 @@
     </svg>
     <span>Hidden Leaf</span>
     <small>木ノ葉隠れの里</small>
+    <button class="who" id="who" type="button" hidden><span class="who-name"></span><span class="who-clan"></span></button>
   </header>
 
   <main class="stage">
@@ -48,6 +49,29 @@
       <a href="#hokage"    data-title="Hokage|Tower"        data-blurb="The seat of the Hokage. Report in, and look out over the village." data-kanji="火">Hokage Tower</a>
     </nav>
   </main>
+
+  <!-- Login: shinobi registration -->
+  <section class="login" id="login" hidden aria-labelledby="login-title">
+    <form class="login-card" id="login-form" autocomplete="off">
+      <p class="kicker">忍者登録</p>
+      <h2 id="login-title">Shinobi Registration</h2>
+      <p class="login-blurb">State your name and clan before entering the village.</p>
+      <label>Shinobi name
+        <input id="login-name" name="name" type="text" required minlength="2" maxlength="24" placeholder="e.g. Naruto" spellcheck="false">
+      </label>
+      <label>Clan
+        <input id="login-clan" name="clan" type="text" list="clans" maxlength="24" placeholder="e.g. Uzumaki (or none)" spellcheck="false">
+        <datalist id="clans">
+          <option value="Uzumaki"><option value="Uchiha"><option value="Hyūga"><option value="Nara"><option value="Yamanaka"><option value="Akimichi">
+          <option value="Inuzuka"><option value="Aburame"><option value="Sarutobi"><option value="Senju"><option value="Hatake"><option value="Haruno">
+          <option value="Might"><option value="Yūhi"><option value="Shimura"><option value="Kurama"><option value="No clan">
+        </datalist>
+      </label>
+      <p class="login-error" aria-live="polite"></p>
+      <button class="go login-go" type="submit"><i aria-hidden="true">火</i>Enter the village</button>
+      <p class="login-mode" id="login-mode"></p>
+    </form>
+  </section>
 
   <!-- Under-construction overlay: shown in place of the real pages for now -->
   <section class="uc" id="uc" hidden aria-labelledby="uc-title">
@@ -111,6 +135,8 @@
     <audio id="sfx-select" src="assets/sfx/select.wav" preload="auto"></audio>
   </footer>
 
+  <script src="js/firebase-config.js"></script>
+  <script src="js/account.js"></script>
   <script src="js/menu.js"></script>
 </body>
 </html>

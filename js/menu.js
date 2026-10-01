@@ -91,6 +91,7 @@
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT") return;
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       step(e.key === "ArrowDown" ? 1 : -1);
@@ -230,6 +231,47 @@
   }
   document.addEventListener("pointerdown", firstInteraction);
   document.addEventListener("keydown", firstInteraction);
+  /* ---------- Shinobi login ---------- */
+  var login = document.getElementById("login");
+  var loginForm = document.getElementById("login-form");
+  var loginName = document.getElementById("login-name");
+  var loginClan = document.getElementById("login-clan");
+  var loginErr = document.querySelector(".login-error");
+  var who = document.getElementById("who");
+
+  function showWho(p) {
+    who.hidden = !p;
+    if (!p) return;
+    who.querySelector(".who-name").textContent = p.name;
+    who.querySelector(".who-clan").textContent = p.clan && p.clan !== "No clan" ? p.clan + " clan" : "";
+    who.title = "Change shinobi";
+  }
+  function openLogin(prefill) {
+    loginName.value = prefill ? prefill.name : "";
+    loginClan.value = prefill ? prefill.clan : "";
+    loginErr.textContent = "";
+    document.getElementById("login-mode").textContent = window.Shinobi.online ? "Synced with the village records" : "Offline mode: saved in this browser only";
+    login.hidden = false;
+    setTimeout(function () { loginName.focus(); }, 50);
+  }
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = loginName.value.trim().replace(/\s+/g, " ");
+    var clan = loginClan.value.trim() || "No clan";
+    if (name.length < 2) { loginErr.textContent = "A shinobi needs a name of at least two characters."; return; }
+    loginErr.textContent = "";
+    sfx("sfx-select", 0.8);
+    window.Shinobi.save(name, clan).then(function () {
+      login.hidden = true;
+      showWho(window.Shinobi.profile || { name: name, clan: clan });
+    }).catch(function () { loginErr.textContent = "The village records are unreachable. Try again in a moment."; });
+  });
+  who.addEventListener("click", function () { sfx("sfx-hover", 0.5); openLogin(window.Shinobi.profile); });
+  window.Shinobi.onChange(showWho);
+  window.Shinobi.ready.then(function (s) {
+    if (s.profile) showWho(s.profile); else openLogin(null);
+  });
+
   if (resume && resume.track >= 0 && resume.track < PLAYLIST.length) {
     load(resume.track, false);
     audio.loop = !!resume.loop;
