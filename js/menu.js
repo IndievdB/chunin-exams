@@ -54,23 +54,46 @@
     select(items[idx]);
   }
 
+  /* ---------- Under construction: every destination opens the overlay in-page,
+     so the music keeps playing. Swap these for real links when the pages exist. */
+  var uc = document.getElementById("uc");
+  var ucWhere = document.querySelector(".uc-where");
+  function openUC(item) {
+    ucWhere.textContent = item.textContent;
+    uc.hidden = false;
+    document.querySelector(".uc-back").focus();
+  }
+  function closeUC() {
+    uc.hidden = true;
+    if (location.hash) history.replaceState(null, "", location.pathname);
+    if (current) current.focus();
+  }
   items.forEach(function (a) {
     a.addEventListener("mouseenter", function () { select(a); });
     a.addEventListener("focus", function () { select(a); });
     a.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
+    a.addEventListener("click", function (e) { e.preventDefault(); select(a, true); history.replaceState(null, "", a.getAttribute("href")); openUC(a); });
   });
   go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
+  go.addEventListener("click", function (e) { e.preventDefault(); if (current) { history.replaceState(null, "", current.getAttribute("href")); openUC(current); } });
+  document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-select", 0.8); closeUC(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !uc.hidden) closeUC(); });
+  uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       step(e.key === "ArrowDown" ? 1 : -1);
-    } else if (e.key === "Enter" && current && document.activeElement.tagName !== "BUTTON") {
+    } else if (e.key === "Enter" && current && uc.hidden && document.activeElement.tagName !== "BUTTON") {
       sfx("sfx-select", 0.8);
-      setTimeout(function () { location.href = current.href; }, 150);
+      history.replaceState(null, "", current.getAttribute("href"));
+      openUC(current);
     }
   });
-  select(items[0], true);
+  // deep link: #training etc. selects that item and opens its overlay
+  var start = items.filter(function (a) { return a.getAttribute("href") === location.hash; })[0];
+  select(start || items[0], true);
+  if (start) openUC(start);
 
   /* ---------- Music player ---------- */
   // Placeholder loops generated for this prototype (royalty-free). Swap the
@@ -143,7 +166,8 @@
   try { savedVol = parseFloat(localStorage.getItem("volume")); if (!(savedVol >= 0 && savedVol <= 1)) savedVol = 0.7; } catch (e) {}
   function updateMuteIcon() {
     var v = audio.volume;
-    muteBtn.textContent = audio.muted || v === 0 ? "🔇" : v < 0.5 ? "🔉" : "🔊";
+    muteBtn.classList.toggle("silent", v === 0);
+    muteBtn.classList.toggle("low", v > 0 && v < 0.5);
     muteBtn.setAttribute("aria-pressed", String(audio.muted));
     muteBtn.setAttribute("aria-label", audio.muted ? "Unmute" : "Mute");
   }
@@ -162,14 +186,51 @@
   });
   applyVolume(savedVol);
 
+  /* minimal player until the pointer comes near the bottom (or the player is focused) */
+  var miniTimer = null;
+  function setMini(on) { player.classList.toggle("mini", on); }
+  document.addEventListener("pointermove", function (e) {
+    var near = e.clientY > window.innerHeight - 150;
+    clearTimeout(miniTimer);
+    if (near) setMini(false);
+    else miniTimer = setTimeout(function () { if (!player.contains(document.activeElement)) setMini(true); }, 900);
+  });
+  player.addEventListener("focusin", function () { setMini(false); });
+  player.addEventListener("focusout", function () { miniTimer = setTimeout(function () { setMini(true); }, 1500); });
+  setMini(true);
+
+  /* remember track + position so a reload (or a future real page) resumes the music */
+  function saveState() {
+    try { localStorage.setItem("music", JSON.stringify({ track: track, t: audio.currentTime, playing: !audio.paused, loop: audio.loop })); } catch (e) {}
+  }
+  audio.addEventListener("timeupdate", function () { if (Math.floor(audio.currentTime) % 3 === 0) saveState(); });
+  audio.addEventListener("pause", saveState);
+  audio.addEventListener("play", saveState);
+  window.addEventListener("pagehide", saveState);
+  var resume = null;
+  try { resume = JSON.parse(localStorage.getItem("music")); } catch (e) {}
+
   // Browsers block autoplay until the page is touched, so the first click
   // or key anywhere starts the music.
-  function firstInteraction() {
+  function firstInteraction(e) {
+    // a press on the player itself is handled by its own buttons
+    if (e && e.target && player.contains(e.target)) return;
     if (audio.paused) audio.play().catch(function () {});
     document.removeEventListener("pointerdown", firstInteraction);
     document.removeEventListener("keydown", firstInteraction);
   }
   document.addEventListener("pointerdown", firstInteraction);
   document.addEventListener("keydown", firstInteraction);
-  load(0, false);
+  if (resume && resume.track >= 0 && resume.track < PLAYLIST.length) {
+    load(resume.track, false);
+    audio.loop = !!resume.loop;
+    loopBtn.setAttribute("aria-pressed", String(audio.loop));
+    audio.addEventListener("loadedmetadata", function once() {
+      audio.removeEventListener("loadedmetadata", once);
+      if (resume.t && resume.t < audio.duration) audio.currentTime = resume.t;
+      if (resume.playing) audio.play().catch(function () {});
+    });
+  } else {
+    load(0, false);
+  }
 })();

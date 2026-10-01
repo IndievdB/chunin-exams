@@ -76,11 +76,11 @@ body {
 .go {
   display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--display); font-size: clamp(20px, 2vw, 28px); letter-spacing: 2px;
-  color: var(--gold); background: rgba(0,0,0,.75); padding: 6px 28px 6px 8px; border-radius: 999px; text-decoration: none;
-  border: 3px solid var(--gold); box-shadow: 0 4px 0 rgba(0,0,0,.6); transition: transform .15s, background .15s;
+  color: #3b1a00; background: radial-gradient(ellipse at 30% 25%, #fff0a8, #ffb300 55%, #e08a00); padding: 6px 28px 6px 8px; border-radius: 999px; text-decoration: none;
+  border: 3px solid #3b1a00; box-shadow: 0 4px 0 #3b1a00; transition: transform .15s, filter .15s;
 }
-.go:hover { transform: translateY(-2px); background: rgba(0,0,0,.9); }
-.go i { display: grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--red); color: #fff; font-style: normal; font-size: .95em; border: 2px solid #ffd54a; transition: transform .2s; }
+.go:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.go i { display: grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--red); color: #fff; font-style: normal; font-size: .95em; border: 2px solid #3b1a00; transition: transform .2s; }
 .go:hover i { transform: rotate(-12deg) scale(1.1); }
 
 /* ---------- decorative clouds: drift across and fade in/out ---------- */
@@ -121,7 +121,14 @@ body {
   padding: 10px 44px 14px; min-height: 64px;
   background: linear-gradient(transparent, rgba(0,0,0,.6) 50%);
   color: #fff; text-shadow: 2px 2px 0 #000;
+  transition: background .3s;
 }
+/* collapsed: only the track name and equalizer peek out; everything else folds away */
+.player.mini { background: linear-gradient(transparent, rgba(0,0,0,.35) 60%); }
+.player .controls, .player .volume, .player .progress, .player .time { transition: opacity .25s, max-width .3s ease, margin .3s ease; max-width: 400px; overflow: hidden; }
+.player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { opacity: 0; max-width: 0; margin-left: -18px; pointer-events: none; }
+.player.mini .now { opacity: .8; transform: scale(.9); transform-origin: right center; }
+.now { transition: opacity .25s, transform .25s; }
 .player-rod { display: none; }
 .now { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; min-width: 0; text-align: right; }
 .track-name { font-family: var(--brush); font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -139,7 +146,13 @@ body {
 }
 .controls button:hover { background: rgba(255,255,255,.3); transform: translateY(-1px); }
 .controls #play { background: var(--gold); color: #3b1a00; border-color: var(--gold); }
-.controls #loop[aria-pressed="true"] { background: var(--red); border-color: var(--red); }
+.controls #loop[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #3b1a00; }
+.controls #loop svg, .volume #mute svg { width: 18px; height: 18px; display: block; margin: auto; }
+.volume #mute .slash { display: none; }
+.volume #mute[aria-pressed="true"] .slash { display: block; }
+.volume #mute[aria-pressed="true"] .waves { display: none; }
+.volume #mute.low .w2 { display: none; }
+.volume #mute.silent .waves { display: none; }
 .volume { display: flex; align-items: center; gap: 6px; }
 .volume button { font: inherit; font-size: 13px; line-height: 1; width: 32px; height: 32px; cursor: pointer; background: rgba(255,255,255,.12); color: #fff; border: 2px solid #fff; border-radius: 50%; text-shadow: none; transition: background .15s; }
 .volume button:hover { background: rgba(255,255,255,.3); }
@@ -151,6 +164,25 @@ body {
 .progress .bar { height: 100%; width: 0; background: var(--gold); }
 .time { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; }
 
+/* ---------- under construction ---------- */
+.uc { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 24px; background: rgba(5,20,35,.72); backdrop-filter: blur(3px); animation: ucIn .3s ease-out; }
+.uc[hidden] { display: none; }
+@keyframes ucIn { from { opacity: 0; } }
+.uc-card { display: grid; grid-template-columns: minmax(260px, 420px) 1fr; gap: 28px; align-items: center; max-width: 900px; width: 100%;
+  background: #0d1b28; border: 3px solid var(--gold); border-radius: 14px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.6); animation: ucCard .4s cubic-bezier(.2,1.4,.3,1); }
+@keyframes ucCard { from { transform: translateY(30px) scale(.95); } }
+.uc-card img { width: 100%; border-radius: 8px; border: 3px solid #2a3b4d; filter: saturate(.85); }
+.uc-text { display: grid; gap: 10px; justify-items: start; }
+.uc-text .kicker { color: var(--gold); letter-spacing: 6px; font-size: 14px; }
+.uc-text h2 { font-family: var(--brush); font-size: clamp(36px, 5vw, 64px); line-height: 1; margin: 0;
+  background: linear-gradient(#fff 35%, #9fdcff 60%, #4aa3dd); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px #0b3a5c) drop-shadow(3px 4px 0 rgba(10,50,90,.7)); padding-bottom: .15em; }
+.uc-tape { font-family: var(--display); font-size: 20px; letter-spacing: 3px; text-transform: uppercase; color: #1a1a1a; padding: 4px 14px; transform: rotate(-2deg);
+  background: repeating-linear-gradient(135deg, #ffb300 0 14px, #1a1a1a 14px 28px); box-shadow: inset 0 0 0 100px rgba(255,179,0,.0); }
+.uc-tape { background: #ffb300; border-top: 6px solid; border-bottom: 6px solid; border-image: repeating-linear-gradient(135deg, #ffb300 0 10px, #1a1a1a 10px 20px) 6; }
+.uc-blurb { color: #cfe3f5; font-size: 17px; line-height: 1.5; }
+.uc-back { margin-top: 6px; font-size: clamp(18px, 1.6vw, 22px); }
+
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   body { overflow: auto; }
@@ -160,6 +192,8 @@ body {
   .cloud.c2, .cloud.c3 { display: none; }
   .cloud.c1 { left: auto; right: 2vw; top: 1%; width: 90px; }
   .player { flex-wrap: wrap; justify-content: center; gap: 10px 16px; padding: 12px 16px; }
+  .player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { max-width: 400px; opacity: 1; margin-left: 0; pointer-events: auto; } /* no hover on touch: always full */
+  .uc-card { grid-template-columns: 1fr; }
   .volume input { width: 70px; }
   .time { display: none; }
   .progress { width: 100%; }

@@ -2,7 +2,7 @@
 
 A static website themed around the Hidden Leaf Village (Konoha). It needs no build step.
 
-`index.html` is the game-style **Village Select** menu: tilted menu items, a big title that re-animates letter by letter as you hover, and a music player along the bottom. Each item opens a part of the village in `village.html`:
+`index.html` is the game-style **Hidden Leaf** menu: a big title that re-animates letter by letter as you hover, and a music player along the bottom. For now every destination opens an **Under Construction** overlay inside the menu page (so the music keeps playing); the built-out location pages live in `village.html` and can be linked back in by changing the menu `href`s in `index.html`:
 
 | Menu | Location | What's there |
 |---|---|---|
