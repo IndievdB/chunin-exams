@@ -47,17 +47,18 @@ body {
 .ribbon small { font-family: var(--jp); font-size: .4em; color: #fff; letter-spacing: 5px; text-shadow: 1px 1px 0 #000; }
 
 /* ---------- stage ---------- */
-.stage { position: relative; display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; padding: 0 5vw; }
+.stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 0 4vw; }
 
 /* selector: title, blurb, enter */
-.hero { position: relative; z-index: 2; display: grid; justify-items: center; gap: 14px; padding: 0 4vw; }
+.hero { position: relative; z-index: 2; display: grid; justify-items: center; gap: 14px; padding: 0 3vw; min-width: 0; }
 .title {
   font-family: var(--brush); font-weight: 400; line-height: .95; text-align: center;
-  font-size: clamp(56px, 9vw, 136px); letter-spacing: 1px;
+  font-size: clamp(40px, 7vw, 120px); letter-spacing: 1px; max-width: 100%;
+  --fit: 1; font-size: calc(clamp(40px, 7vw, 120px) * var(--fit));
   min-height: 2em; display: flex; flex-direction: column; align-items: center;
   transform: rotate(-4deg);
 }
-.title .line { display: flex; }
+.title .line { display: flex; white-space: nowrap; }
 .title .ch {
   display: inline-block; white-space: pre; padding: .1em .02em .3em; margin: -.1em 0 -.3em;
   background: linear-gradient(#fff 35%, #9fdcff 60%, #4aa3dd);
@@ -100,7 +101,7 @@ body {
 .menu { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; gap: clamp(4px, 1vh, 14px); padding-right: 3vw; }
 .menu a {
   --tilt: 0deg;
-  font-family: var(--display); font-size: clamp(26px, 3vw, 40px); letter-spacing: 2px; line-height: 1;
+  font-family: var(--display); font-size: clamp(22px, 2.6vw, 36px); letter-spacing: 1.5px; line-height: 1; white-space: nowrap;
   color: rgba(255,255,255,.7); text-decoration: none; padding: 4px 30px 4px 10px; position: relative;
   text-shadow: 2px 2px 0 #000, 0 0 8px rgba(0,0,0,.6);
   transform: rotate(var(--tilt));
@@ -108,7 +109,7 @@ body {
 }
 .menu a:hover, .menu a:focus-visible, .menu a.active {
   color: var(--gold); outline: none;
-  transform: rotate(var(--tilt)) translateX(-14px) scale(1.15);
+  transform: rotate(var(--tilt)) translateX(-10px) scale(1.12);
 }
 .menu a.active::after { /* gold diamond marker */
   content: ""; position: absolute; right: 8px; top: 50%; width: 11px; height: 11px;
@@ -190,9 +191,13 @@ body {
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   body { overflow: auto; }
-  .stage { grid-template-columns: 1fr; align-content: start; row-gap: 20px; padding-top: 16px; }
+  .stage { grid-template-columns: 1fr; align-content: start; row-gap: 20px; padding: 16px 16px 0; }
+  .blurb { max-width: 100%; padding: 0 8px; }
+  .hero { padding: 0; }
+  .title { --mobile-base: clamp(32px, 11vw, 56px); font-size: calc(var(--mobile-base) * var(--fit)); }
   .hero { padding: 0; }
   .menu { align-items: center; padding: 0; }
+  .menu a { font-size: clamp(20px, 6vw, 28px); }
   .cloud.c2, .cloud.c3 { display: none; }
   .cloud.c1 { left: auto; right: 2vw; top: 1%; width: 90px; }
   body { padding-bottom: 150px; }

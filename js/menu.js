@@ -33,7 +33,17 @@
       });
       title.appendChild(line);
     });
+    fitTitle();
   }
+  // shrink the title until its longest line fits the column
+  function fitTitle() {
+    title.style.setProperty("--fit", 1);
+    var avail = title.parentElement.clientWidth;
+    var widest = 0;
+    title.querySelectorAll(".line").forEach(function (l) { widest = Math.max(widest, l.scrollWidth); });
+    if (widest > avail) title.style.setProperty("--fit", Math.max(0.5, avail / widest));
+  }
+  window.addEventListener("resize", fitTitle);
 
   function select(item, instant) {
     if (item === current) return;

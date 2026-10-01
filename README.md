@@ -4,14 +4,16 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 
 `index.html` is the game-style **Hidden Leaf** menu: a big title that re-animates letter by letter as you hover, and a music player along the bottom. For now every destination opens an **Under Construction** overlay inside the menu page (so the music keeps playing); the built-out location pages live in `village.html` and can be linked back in by changing the menu `href`s in `index.html`:
 
-| Menu | Location | What's there |
-|---|---|---|
-| Village Gate | `#village` | Landing page, village map, welcome scrolls |
-| Ninja Training | `#training` | Training grounds, bell test, chakra control, taijutsu scrolls |
-| Chūnin Exams | `#exams` | The three exam stages + an interactive "Question 10" |
-| Missions | `#missions` | Mission desk at Hokage Tower — draw D–S rank missions, keep a log |
-| Academy | `#academy` | Curriculum and hand-sign scrolls |
-| Might Guy's Hall | `#guy` | Might Guy scrolls, Eight Gates, Springtime of Youth button, portrait gallery |
+| Menu | Route |
+|---|---|
+| Residence | `#residence` |
+| Academy | `#academy` |
+| Training Grounds | `#training` |
+| Mission Assignment Desk | `#missions` |
+| Ninja Exams | `#exams` |
+| Hokage Tower | `#hokage` |
+
+The earlier built-out sections in `village.html` (training, exams, missions, academy, Might Guy's hall) are still there to reuse as these pages are filled in.
 
 ## Adding the official artwork
 
