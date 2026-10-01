@@ -190,23 +190,41 @@ body {
 
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
-  body { overflow: auto; }
-  .stage { grid-template-columns: 1fr; align-content: start; row-gap: 20px; padding: 16px 16px 0; }
-  .blurb { max-width: 100%; padding: 0 8px; }
-  .hero { padding: 0; }
-  .title { --mobile-base: clamp(32px, 11vw, 56px); font-size: calc(var(--mobile-base) * var(--fit)); }
-  .hero { padding: 0; }
-  .menu { align-items: center; padding: 0; }
-  .menu a { font-size: clamp(20px, 6vw, 28px); }
-  .cloud.c2, .cloud.c3 { display: none; }
-  .cloud.c1 { left: auto; right: 2vw; top: 1%; width: 90px; }
-  body { padding-bottom: 150px; }
-  .player { flex-wrap: wrap; justify-content: center; gap: 10px 16px; padding: 12px 16px; height: auto; }
-  .player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { max-width: 400px; opacity: 1; margin-left: 0; pointer-events: auto; } /* no hover on touch: always full */
+  body { overflow: auto; padding-bottom: 96px; }
+  /* ribbon: one short line */
+  .ribbon { margin-top: 10px; padding: 6px 28px 6px 16px; font-size: 22px; gap: 10px; }
+  .ribbon small { display: none; }
+  /* stage: stacked, compact */
+  .stage { grid-template-columns: 1fr; align-content: start; row-gap: 6vh; padding: 5vh 12px 0; }
+  .hero { padding: 0; gap: 14px; }
+  .title { --mobile-base: clamp(36px, 12vw, 56px); font-size: calc(var(--mobile-base) * var(--fit)); min-height: 0; }
+  .blurb { display: none; }
+  .go { font-size: 18px; padding: 4px 20px 4px 6px; }
+  .cloud { display: none; }
+  .menu { align-items: center; padding: 6px 0 0; gap: 0; }
+  .menu { gap: 1.2vh; }
+  .menu a { font-size: clamp(20px, 6.4vw, 30px); padding: 3px 24px 3px 8px; letter-spacing: 1px; }
+  .menu a:hover, .menu a:focus-visible, .menu a.active { transform: scale(1.08); }
+  .menu a.active::after { right: 4px; width: 8px; height: 8px; }
+  /* player: single short row, always expanded (no hover on touch) */
+  .player { height: auto; min-height: 0; padding: 6px 12px 10px; gap: 10px; justify-content: space-between; flex-wrap: nowrap; }
+  .player.mini .controls, .player.mini .volume, .player.mini .progress, .player.mini .time { max-width: 400px; opacity: 1; margin-left: 0; pointer-events: auto; }
+  .player.mini .now { opacity: 1; transform: none; }
+  .track-meta, .time, .progress { display: none; }
+  .track-name { font-size: 14px; }
+  .eq { height: 12px; }
+  .controls { gap: 4px; }
+  .controls button { width: 32px; height: 32px; }
+  .controls #play { width: 36px; height: 36px; }
+  .controls button svg, .controls #loop svg, .volume #mute svg { width: 18px; height: 18px; }
+  .volume { gap: 4px; }
+  .volume button { width: 32px; height: 32px; }
+  .volume input { width: 64px; flex: 0 0 64px; }
+  .volume { flex: 0 0 auto; }
+  .controls { flex: 0 0 auto; }
+  .now { flex: 1 1 0; min-width: 0; }
+  .track-name { max-width: 100%; }
   .uc-card { grid-template-columns: 1fr; }
-  .volume input { width: 70px; }
-  .time { display: none; }
-  .progress { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bg { animation: none; }

@@ -9,7 +9,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 | Residence | `#residence` |
 | Academy | `#academy` |
 | Training Grounds | `#training` |
-| Mission Assignment Desk | `#missions` |
+| Missions | `#missions` |
 | Ninja Exams | `#exams` |
 | Hokage Tower | `#hokage` |
 
