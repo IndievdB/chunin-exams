@@ -16,12 +16,14 @@
     var ok = function () { return Promise.resolve(); };
     api.signIn = api.signUp = api.guest = function () { api.user = { isAnonymous: true }; emit(); return ok(); };
     api.resetPassword = ok;
-    api.saveAcademy = function (problemId) {
-      var ac = Object.assign({}, (api.profile && api.profile.academy) || {}); ac[problemId] = true;
-      api.profile = Object.assign({}, api.profile || {}, { academy: ac });
+    api.saveProgress = function (field, problemId) {
+      var ac = Object.assign({}, (api.profile && api.profile[field]) || {}); ac[problemId] = true;
+      var patch = {}; patch[field] = ac;
+      api.profile = Object.assign({}, api.profile || {}, patch);
       try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
       emit(); return ok();
     };
+    api.saveAcademy = function (id) { return api.saveProgress("academy", id); };
     api.saveAvatar = function (avatar) {
       api.profile = Object.assign({}, api.profile || {}, { avatar: avatar });
       try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
@@ -85,10 +87,11 @@
       api.saveAvatar = function (avatar) {
         return F.setDoc(F.doc(db, "shinobi", auth.currentUser.uid), { avatar: avatar, updatedAt: F.serverTimestamp() }, { merge: true });
       };
-      api.saveAcademy = function (problemId) {
-        var patch = { updatedAt: F.serverTimestamp() }; patch["academy." + problemId] = true;
+      api.saveProgress = function (field, problemId) {
+        var patch = { updatedAt: F.serverTimestamp() }; patch[field + "." + problemId] = true;
         return F.updateDoc(F.doc(db, "shinobi", auth.currentUser.uid), patch);
       };
+      api.saveAcademy = function (id) { return api.saveProgress("academy", id); };
       api.signOut = function () { return A.signOut(auth); };
 
       A.onAuthStateChanged(auth, function (u) {

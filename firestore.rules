@@ -7,6 +7,7 @@ service cloud.firestore {
       allow create, update: if request.auth != null && request.auth.uid == uid
         && (!("avatar" in request.resource.data) || request.resource.data.avatar is map)
         && (!("academy" in request.resource.data) || request.resource.data.academy is map)
+        && (!("training" in request.resource.data) || request.resource.data.training is map)
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 24
         && request.resource.data.clan is string && request.resource.data.clan.size() <= 24

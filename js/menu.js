@@ -71,6 +71,7 @@
   function openUC(item) {
     if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
     if (item.getAttribute("href") === "#academy") { window.Academy.open(); document.body.classList.add("modal"); window.setMusicArea("academy"); return; }
+    if (item.getAttribute("href") === "#training") { window.Training.open(); document.body.classList.add("modal"); window.setMusicArea("training"); return; }
     ucWhere.textContent = item.textContent;
     document.querySelector(".uc-back").lastChild.textContent = "Back to the village";
     uc.hidden = false; document.body.classList.add("modal");
@@ -78,7 +79,7 @@
   }
   function closeUC() {
     if (!uc.hidden && !document.getElementById("residence").hidden) { uc.hidden = true; return; } // stats popup inside the room: back to the room
-    uc.hidden = true; window.Residence.close(); window.Academy.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
+    uc.hidden = true; window.Residence.close(); window.Academy.close(); window.Training.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
   }
@@ -106,12 +107,12 @@
     document.querySelector(".uc-back").lastChild.textContent = "Back to the room";
     document.querySelector(".uc-back").focus();
   };
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden || !document.getElementById("academy").hidden)) closeUC(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden || !document.getElementById("academy").hidden || !document.getElementById("training").hidden)) closeUC(); });
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
-    if (!document.getElementById("residence").hidden || !document.getElementById("academy").hidden || !login.hidden) return; // menu keys only on the menu
+    if (!document.getElementById("residence").hidden || !document.getElementById("academy").hidden || !document.getElementById("training").hidden || !login.hidden) return; // menu keys only on the menu
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       step(e.key === "ArrowDown" ? 1 : -1);
@@ -146,6 +147,10 @@
       { title: "Sasuke's Theme",        src: "assets/music/sasukes-theme.mp3" },
       { title: "Survival Examination",  src: "assets/music/survival-examination.mp3" },
       { title: "Fake",                  src: "assets/music/fake.mp3" }
+    ],
+    training: [
+      { title: "Hinata vs Neji",        src: "assets/music/hinata-vs-neji.mp3" },
+      { title: "Survival Examination",  src: "assets/music/survival-examination.mp3" }
     ]
   };
   var area = "village";
@@ -166,7 +171,7 @@
     s = Math.floor(s);
     return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
   }
-  var areaPos = { village: { track: 0, t: 0 }, residence: { track: 0, t: 0 }, academy: { track: 0, t: 0 } };
+  var areaPos = { village: { track: 0, t: 0 }, residence: { track: 0, t: 0 }, academy: { track: 0, t: 0 }, training: { track: 0, t: 0 } };
   var FADE = 700; // ms; crossfade when moving between areas
   var fadeTimer = null;
   function fadeTo(target, ms, done) {
@@ -339,7 +344,7 @@
     document.getElementById("login-account").textContent = acct;
     setTimeout(function () { loginName.focus(); }, 50);
   }
-  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden && document.getElementById("academy").hidden) document.body.classList.remove("modal"); }
+  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden && document.getElementById("academy").hidden && document.getElementById("training").hidden) document.body.classList.remove("modal"); }
 
   // step 1: account
   authForm.addEventListener("submit", function (e) { e.preventDefault(); doAuth("signin"); });

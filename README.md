@@ -8,7 +8,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 |---|---|
 | Residence | `#residence` — your shinobi's room: rank, name/clan editing, stats, and the character creator |
 | Academy | `#academy` — Iruka-sensei's Python fundamentals: lessons with auto-checked problems in an in-browser sandbox |
-| Training Grounds | `#training` |
+| Training Grounds | `#training` — Rock Lee's data-structures dojo: hash maps, linked lists, stacks, queues, heaps, trees, graphs/grids, DP |
 | Missions | `#missions` |
 | Ninja Exams | `#exams` |
 | Hokage Tower | `#hokage` |
@@ -47,6 +47,10 @@ Setup:
 4. In **Build → Firestore Database**, create a database, then paste `firestore.rules` into the **Rules** tab and publish.
 
 Until a config is present the site runs in offline mode and keeps the profile in the browser's local storage. Both fit comfortably in Firebase's free Spark plan.
+
+## Dojos (Academy and Training Grounds)
+
+Both lesson screens are instances of `js/dojo.js`, configured in `js/dojos.js` (background, teacher sprite, curriculum, profile field). The Academy uses `js/lessons.js` (Python fundamentals, Iruka) and the Training Grounds use `js/jutsu.js` (data structures, Rock Lee). Progress is saved on the profile under `academy` and `training`.
 
 ## Academy (Python lessons)
 
