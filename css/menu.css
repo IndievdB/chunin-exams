@@ -37,14 +37,14 @@ body {
 
 /* ---------- ribbon ---------- */
 .ribbon {
-  justify-self: start; display: flex; align-items: baseline; gap: 14px;
-  margin-top: 22px; padding: 10px 60px 10px 36px;
+  justify-self: start; display: flex; align-items: center; gap: 14px;
+  margin-top: 22px; padding: 10px 60px 10px 36px; max-height: 110px; overflow: hidden; line-height: 1.3;
   background: linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.55) 70%, transparent);
   font-family: var(--display); font-size: clamp(26px, 3.4vw, 44px); letter-spacing: 2px; color: var(--gold);
   text-shadow: 3px 3px 0 #3b1a00, -1px -1px 0 #3b1a00, 0 6px 14px rgba(0,0,0,.7);
 }
-.ribbon .leaf { width: 1em; height: 1em; align-self: center; filter: drop-shadow(2px 2px 0 #3b1a00); }
-.ribbon small { font-family: var(--jp); font-size: .4em; color: #fff; letter-spacing: 5px; text-shadow: 1px 1px 0 #000; }
+.ribbon .leaf { width: 1em; height: 1em; flex: 0 0 auto; filter: drop-shadow(2px 2px 0 #3b1a00); }
+.ribbon small { font-family: var(--jp); font-size: .4em; color: #fff; letter-spacing: 5px; text-shadow: 1px 1px 0 #000; align-self: flex-end; margin-bottom: .55em; }
 
 /* ---------- stage ---------- */
 .stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 0 4vw; }
@@ -171,14 +171,14 @@ body.modal .player, body.modal .player.mini { background: none; }
 .time { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; }
 
 /* ---------- ribbon account chip ---------- */
-.who { margin-left: 18px; align-self: center; font: inherit; font-size: .42em; letter-spacing: 1px; cursor: pointer;
-  display: grid; text-align: left; line-height: 1.15; padding: 4px 12px; border-radius: 8px;
+.who { margin-left: 18px; font: inherit; font-size: .42em; letter-spacing: 1px; cursor: pointer;
+  text-align: left; line-height: 1.15; padding: 4px 12px; border-radius: 8px; height: 46px; box-sizing: border-box; overflow: hidden; flex: 0 0 auto;
   background: rgba(255,255,255,.1); color: #fff; border: 2px solid rgba(255,255,255,.35); text-shadow: 1px 1px 0 #000; }
 .who:hover { background: rgba(255,255,255,.2); }
 .who-name { color: var(--gold); }
 .who-clan { opacity: .8; font-size: .85em; }
 .who-clan:empty { display: none; }
-.who { display: flex; gap: 8px; align-items: center; max-height: 48px; }
+.who { display: flex; gap: 8px; align-items: center; }
 .who-avatar { display: block; width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; overflow: hidden; position: relative; background: #0d1b28; border: 2px solid var(--gold); }
 .who-avatar svg { position: absolute; width: 48px; height: 58px; left: -9px; top: -13px; }
 .who-avatar:empty { display: none; }
