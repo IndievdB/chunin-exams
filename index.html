@@ -50,11 +50,34 @@
     </nav>
   </main>
 
-  <!-- Login: shinobi registration -->
-  <section class="login" id="login" hidden aria-labelledby="login-title">
-    <form class="login-card" id="login-form" autocomplete="off">
+  <!-- Login: step 1 account, step 2 shinobi profile -->
+  <section class="login" id="login" hidden>
+    <form class="login-card" id="auth-form" autocomplete="on" hidden>
       <p class="kicker">忍者登録</p>
-      <h2 id="login-title">Shinobi Registration</h2>
+      <h2>Shinobi Sign-in</h2>
+      <p class="login-blurb">Sign in to the village records, or register a new shinobi.</p>
+      <label>Email
+        <input id="auth-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" spellcheck="false">
+      </label>
+      <label>Password
+        <input id="auth-pw" name="password" type="password" required minlength="6" autocomplete="current-password" placeholder="at least 6 characters">
+      </label>
+      <p class="login-error" aria-live="polite"></p>
+      <div class="login-actions">
+        <button class="go login-go" type="submit" data-act="signin"><i aria-hidden="true">火</i>Sign in</button>
+        <button class="btn-ghost" type="button" data-act="signup">Create account</button>
+      </div>
+      <div class="login-links">
+        <button class="link" type="button" data-act="reset">Forgot password?</button>
+        <span aria-hidden="true">·</span>
+        <button class="link" type="button" data-act="guest">Continue as guest</button>
+      </div>
+      <p class="login-mode" id="login-mode"></p>
+    </form>
+
+    <form class="login-card" id="profile-form" autocomplete="off" hidden>
+      <p class="kicker">忍者登録</p>
+      <h2>Shinobi Registration</h2>
       <p class="login-blurb">State your name and clan before entering the village.</p>
       <label>Shinobi name
         <input id="login-name" name="name" type="text" required minlength="2" maxlength="24" placeholder="e.g. Naruto" spellcheck="false">
@@ -68,8 +91,14 @@
         </datalist>
       </label>
       <p class="login-error" aria-live="polite"></p>
-      <button class="go login-go" type="submit"><i aria-hidden="true">火</i>Enter the village</button>
-      <p class="login-mode" id="login-mode"></p>
+      <div class="login-actions">
+        <button class="go login-go" type="submit"><i aria-hidden="true">火</i><span id="profile-submit">Enter the village</span></button>
+        <button class="btn-ghost" type="button" id="profile-cancel" hidden>Cancel</button>
+      </div>
+      <div class="login-links">
+        <span class="login-account" id="login-account"></span>
+        <button class="link" type="button" id="profile-signout">Sign out</button>
+      </div>
     </form>
   </section>
 

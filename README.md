@@ -36,12 +36,12 @@ Until an image exists, the site shows an illustrated placeholder that names the 
 
 ## Shinobi accounts (Firebase)
 
-On first visit the site asks for a Shinobi name and clan. Identity comes from **Firebase Anonymous Auth** (no password; one account per browser) and the profile is stored in Firestore at `shinobi/{uid}`, so it syncs live and survives reloads. Click your name in the ribbon to change it.
+On first visit the site asks you to sign in with **email and password** (or create an account), then for a Shinobi name and clan. Identity is **Firebase Auth**; the profile is stored in Firestore at `shinobi/{uid}` and syncs live. "Continue as guest" uses an anonymous account that lives in that browser only; a guest who later creates an account keeps their shinobi. Click your name in the ribbon to edit it or sign out.
 
 Setup:
 1. Create a project at console.firebase.google.com and add a **Web app**; copy its `firebaseConfig`.
 2. Paste it into `js/firebase-config.js` (replace `null`).
-3. In **Build → Authentication → Sign-in method**, enable **Anonymous**.
+3. In **Authentication → Sign-in method**, enable **Email/Password** and **Anonymous**.
 4. In **Build → Firestore Database**, create a database, then paste `firestore.rules` into the **Rules** tab and publish.
 
 Until a config is present the site runs in offline mode and keeps the profile in the browser's local storage. Both fit comfortably in Firebase's free Spark plan.

@@ -231,45 +231,98 @@
   }
   document.addEventListener("pointerdown", firstInteraction);
   document.addEventListener("keydown", firstInteraction);
-  /* ---------- Shinobi login ---------- */
+  /* ---------- Shinobi login: account (email/password or guest), then profile ---------- */
+  var S = window.Shinobi;
   var login = document.getElementById("login");
-  var loginForm = document.getElementById("login-form");
+  var authForm = document.getElementById("auth-form");
+  var profileForm = document.getElementById("profile-form");
+  var authEmail = document.getElementById("auth-email");
+  var authPw = document.getElementById("auth-pw");
   var loginName = document.getElementById("login-name");
   var loginClan = document.getElementById("login-clan");
-  var loginErr = document.querySelector(".login-error");
   var who = document.getElementById("who");
 
+  function err(form, msg) { form.querySelector(".login-error").textContent = msg || ""; }
+  function busy(form, on) { form.setAttribute("aria-busy", String(on)); }
   function showWho(p) {
     who.hidden = !p;
     if (!p) return;
     who.querySelector(".who-name").textContent = p.name;
     who.querySelector(".who-clan").textContent = p.clan && p.clan !== "No clan" ? p.clan + " clan" : "";
-    who.title = "Change shinobi";
+    who.title = "Your shinobi";
   }
-  function openLogin(prefill) {
-    loginName.value = prefill ? prefill.name : "";
-    loginClan.value = prefill ? prefill.clan : "";
-    loginErr.textContent = "";
-    document.getElementById("login-mode").textContent = window.Shinobi.online ? "Synced with the village records" : "Offline mode: saved in this browser only";
-    login.hidden = false;
+  function showAuth() {
+    login.hidden = false; profileForm.hidden = true; authForm.hidden = false;
+    err(authForm, ""); authPw.value = "";
+    document.getElementById("login-mode").textContent = S.online ? "Synced with the village records" : "Offline mode: saved in this browser only";
+    setTimeout(function () { authEmail.focus(); }, 50);
+  }
+  function showProfile(editing) {
+    login.hidden = false; authForm.hidden = true; profileForm.hidden = false;
+    err(profileForm, "");
+    loginName.value = editing && S.profile ? S.profile.name : "";
+    loginClan.value = editing && S.profile ? S.profile.clan : "";
+    document.getElementById("profile-submit").textContent = editing ? "Save" : "Enter the village";
+    document.getElementById("profile-cancel").hidden = !editing;
+    var acct = S.user && S.user.email ? S.user.email : "Guest account";
+    document.getElementById("login-account").textContent = acct;
     setTimeout(function () { loginName.focus(); }, 50);
   }
-  loginForm.addEventListener("submit", function (e) {
+  function closeLogin() { login.hidden = true; }
+
+  // step 1: account
+  authForm.addEventListener("submit", function (e) { e.preventDefault(); doAuth("signin"); });
+  authForm.addEventListener("click", function (e) {
+    var act = e.target.closest("[data-act]") && e.target.closest("[data-act]").dataset.act;
+    if (act && act !== "signin") { e.preventDefault(); doAuth(act); }
+  });
+  function doAuth(act) {
+    var email = authEmail.value.trim(), pw = authPw.value;
+    err(authForm, "");
+    if (act === "guest") { busy(authForm, true); return S.guest().catch(function (x) { err(authForm, S.describe(x)); }).then(function () { busy(authForm, false); }); }
+    if (!email) { err(authForm, "Enter your email address."); authEmail.focus(); return; }
+    if (act === "reset") {
+      busy(authForm, true);
+      return S.resetPassword(email).then(function () { err(authForm, "Password reset email sent to " + email + "."); })
+        .catch(function (x) { err(authForm, S.describe(x)); }).then(function () { busy(authForm, false); });
+    }
+    if (pw.length < 6) { err(authForm, "Password must be at least 6 characters."); authPw.focus(); return; }
+    busy(authForm, true);
+    sfx("sfx-select", 0.8);
+    (act === "signup" ? S.signUp(email, pw) : S.signIn(email, pw))
+      .catch(function (x) { err(authForm, S.describe(x)); })
+      .then(function () { busy(authForm, false); });
+  }
+
+  // step 2: profile
+  profileForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var name = loginName.value.trim().replace(/\s+/g, " ");
     var clan = loginClan.value.trim() || "No clan";
-    if (name.length < 2) { loginErr.textContent = "A shinobi needs a name of at least two characters."; return; }
-    loginErr.textContent = "";
+    if (name.length < 2) { err(profileForm, "A shinobi needs a name of at least two characters."); return; }
+    busy(profileForm, true);
     sfx("sfx-select", 0.8);
-    window.Shinobi.save(name, clan).then(function () {
-      login.hidden = true;
-      showWho(window.Shinobi.profile || { name: name, clan: clan });
-    }).catch(function () { loginErr.textContent = "The village records are unreachable. Try again in a moment."; });
+    S.saveProfile(name, clan).then(function () { closeLogin(); showWho(S.profile || { name: name, clan: clan }); })
+      .catch(function (x) { err(profileForm, S.describe(x)); })
+      .then(function () { busy(profileForm, false); });
   });
-  who.addEventListener("click", function () { sfx("sfx-hover", 0.5); openLogin(window.Shinobi.profile); });
-  window.Shinobi.onChange(showWho);
-  window.Shinobi.ready.then(function (s) {
-    if (s.profile) showWho(s.profile); else openLogin(null);
+  document.getElementById("profile-cancel").addEventListener("click", closeLogin);
+  document.getElementById("profile-signout").addEventListener("click", function () {
+    sfx("sfx-hover", 0.5);
+    S.signOut().then(function () { showWho(null); showAuth(); });
+  });
+  who.addEventListener("click", function () { sfx("sfx-hover", 0.5); showProfile(true); });
+
+  // react to auth / profile changes (sign-in from step 1 moves to step 2 or straight in)
+  S.onChange(function () {
+    if (!S.user) { showWho(null); if (!login.hidden || !document.hasFocus()) showAuth(); return; }
+    if (S.profile) { showWho(S.profile); if (!authForm.hidden) closeLogin(); }
+    else if (!login.hidden && !authForm.hidden) showProfile(false);
+  });
+  S.ready.then(function () {
+    if (S.user && S.profile) showWho(S.profile);
+    else if (S.user) showProfile(false);
+    else showAuth();
   });
 
   if (resume && resume.track >= 0 && resume.track < PLAYLIST.length) {
