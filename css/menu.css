@@ -178,9 +178,9 @@ body.modal .player, body.modal .player.mini { background: none; }
 .who-name { color: var(--gold); }
 .who-clan { opacity: .8; font-size: .85em; }
 .who-clan:empty { display: none; }
-.who { grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
-.who-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: #0d1b28; border: 2px solid var(--gold); }
-.who-avatar svg { width: 170%; height: 170%; margin: -8% 0 0 -35%; }
+.who { display: flex; gap: 8px; align-items: center; max-height: 48px; }
+.who-avatar { display: block; width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; overflow: hidden; position: relative; background: #0d1b28; border: 2px solid var(--gold); }
+.who-avatar svg { position: absolute; width: 60px; height: 72px; left: -15px; top: -20px; }
 .who-avatar:empty { display: none; }
 .who-text { display: grid; }
 
