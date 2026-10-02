@@ -318,10 +318,11 @@
     if (!S.user) { showWho(null); if (!login.hidden || !document.hasFocus()) showAuth(); return; }
     if (S.profile) { showWho(S.profile); if (!authForm.hidden) closeLogin(); }
     else if (!login.hidden && !authForm.hidden) showProfile(false);
+    if (S.lastError && !profileForm.hidden) err(profileForm, S.describe(S.lastError));
   });
   S.ready.then(function () {
     if (S.user && S.profile) showWho(S.profile);
-    else if (S.user) showProfile(false);
+    else if (S.user) { showProfile(false); if (S.lastError) err(profileForm, S.describe(S.lastError)); }
     else showAuth();
   });
 

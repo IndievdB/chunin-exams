@@ -46,10 +46,15 @@
       function watchProfile(uid) {
         if (unsub) { unsub(); unsub = null; }
         unsub = F.onSnapshot(F.doc(db, "shinobi", uid), function (snap) {
+          api.lastError = null;
           api.profile = snap.exists() ? snap.data() : null;
           emit();
           if (first) { first = false; resolve(api); }
-        }, function () { if (first) { first = false; resolve(api); } });
+        }, function (e) {
+          // read failed (usually Firestore rules): surface it instead of stalling
+          api.profile = null; api.lastError = e; emit();
+          if (first) { first = false; resolve(api); }
+        });
       }
 
       api.signIn = function (email, pw) { return A.signInWithEmailAndPassword(auth, email, pw); };
@@ -90,6 +95,8 @@
     if (code.indexOf("too-many-requests") >= 0) return "Too many attempts. Wait a moment and try again.";
     if (code.indexOf("network") >= 0) return "Can't reach the village records. Check your connection.";
     if (code.indexOf("operation-not-allowed") >= 0) return "This sign-in method isn't enabled in Firebase.";
+    if (code.indexOf("permission-denied") >= 0) return "The village records refused access (Firestore rules). Check that the rules from firestore.rules are published.";
+    if (code.indexOf("not-found") >= 0) return "The village records database was not found. Check the Firestore database exists and is named (default).";
     return "Something went wrong: " + (code || (err && err.message) || "unknown error");
   };
   window.Shinobi = api;
