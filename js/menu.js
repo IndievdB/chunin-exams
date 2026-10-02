@@ -117,7 +117,6 @@
   var audio = document.getElementById("audio");
   var player = document.querySelector(".player");
   var playBtn = document.getElementById("play");
-  var loopBtn = document.getElementById("loop");
   var nameEl = document.querySelector(".track-name");
   var bar = document.querySelector(".progress .bar");
   var progress = document.getElementById("progress");
@@ -143,18 +142,9 @@
   }
 
   playBtn.addEventListener("click", function () { audio.paused ? audio.play() : audio.pause(); });
-  document.getElementById("prev").addEventListener("click", function () {
-    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
-    load(track - 1, !audio.paused);
-  });
-  document.getElementById("next").addEventListener("click", function () { load(track + 1, !audio.paused); });
-  loopBtn.addEventListener("click", function () {
-    audio.loop = !audio.loop;
-    loopBtn.setAttribute("aria-pressed", String(audio.loop));
-  });
   audio.addEventListener("play", function () { setPlaying(true); });
   audio.addEventListener("pause", function () { setPlaying(false); });
-  audio.addEventListener("ended", function () { if (!audio.loop) load(track + 1, true); });
+  audio.addEventListener("ended", function () { load(track + 1, true); });
   audio.addEventListener("timeupdate", function () {
     var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
     bar.style.width = pct + "%";
@@ -211,7 +201,7 @@
 
   /* remember track + position so a reload (or a future real page) resumes the music */
   function saveState() {
-    try { localStorage.setItem("music", JSON.stringify({ track: track, t: audio.currentTime, playing: !audio.paused, loop: audio.loop })); } catch (e) {}
+    try { localStorage.setItem("music", JSON.stringify({ track: track, t: audio.currentTime, playing: !audio.paused })); } catch (e) {}
   }
   audio.addEventListener("timeupdate", function () { if (Math.floor(audio.currentTime) % 3 === 0) saveState(); });
   audio.addEventListener("pause", saveState);
@@ -328,8 +318,6 @@
 
   if (resume && resume.track >= 0 && resume.track < PLAYLIST.length) {
     load(resume.track, false);
-    audio.loop = !!resume.loop;
-    loopBtn.setAttribute("aria-pressed", String(audio.loop));
     audio.addEventListener("loadedmetadata", function once() {
       audio.removeEventListener("loadedmetadata", once);
       if (resume.t && resume.t < audio.duration) audio.currentTime = resume.t;
