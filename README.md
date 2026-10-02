@@ -54,7 +54,7 @@ Until a config is present the site runs in offline mode and keeps the profile in
 
 ## Music
 
-Two playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through the `village` list and the Residence plays the `residence` list (Fooling Mode). Each area remembers its own track and position, so leaving the Residence resumes the village song where it left off. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
+Playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through `village`, the Residence plays `residence` (Fooling Mode) and the Academy plays `academy` (Sasuke's Theme). Each area remembers its own track and position and the music crossfades when you move between areas. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
 
 ## Publishing on Render (free tier)
 

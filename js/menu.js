@@ -70,7 +70,7 @@
   var ucWhere = document.querySelector(".uc-where");
   function openUC(item) {
     if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
-    if (item.getAttribute("href") === "#academy") { window.Academy.open(); document.body.classList.add("modal"); return; }
+    if (item.getAttribute("href") === "#academy") { window.Academy.open(); document.body.classList.add("modal"); window.setMusicArea("academy"); return; }
     ucWhere.textContent = item.textContent;
     document.querySelector(".uc-back").lastChild.textContent = "Back to the village";
     uc.hidden = false; document.body.classList.add("modal");
@@ -134,12 +134,14 @@
     village: [
       { title: "Afternoon of Konoha", src: "assets/music/afternoon-of-konoha.mp3" },
       { title: "Konohamaru's Theme",  src: "assets/music/konohamarus-theme.mp3" },
-      { title: "Sasuke's Theme",      src: "assets/music/sasukes-theme.mp3" },
       { title: "Alone",               src: "assets/music/alone.mp3" },
       { title: "Hinata vs Neji",      src: "assets/music/hinata-vs-neji.mp3" }
     ],
     residence: [
       { title: "Fooling Mode",        src: "assets/music/fooling-mode.mp3" }
+    ],
+    academy: [
+      { title: "Sasuke's Theme",      src: "assets/music/sasukes-theme.mp3" }
     ]
   };
   var area = "village";
@@ -160,20 +162,36 @@
     s = Math.floor(s);
     return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
   }
-  var areaPos = { village: { track: 0, t: 0 }, residence: { track: 0, t: 0 } };
+  var areaPos = { village: { track: 0, t: 0 }, residence: { track: 0, t: 0 }, academy: { track: 0, t: 0 } };
+  var FADE = 700; // ms; crossfade when moving between areas
+  var fadeTimer = null;
+  function fadeTo(target, ms, done) {
+    clearInterval(fadeTimer);
+    var start = audio.volume, steps = Math.max(1, Math.round(ms / 40)), i = 0;
+    fadeTimer = setInterval(function () {
+      i++; audio.volume = Math.max(0, Math.min(1, start + (target - start) * (i / steps)));
+      if (i >= steps) { clearInterval(fadeTimer); fadeTimer = null; if (done) done(); }
+    }, 40);
+  }
   function setArea(next) {
     if (next === area) return;
     areaPos[area] = { track: track, t: audio.currentTime };
     var wasPlaying = !audio.paused;
-    area = next; PLAYLIST = PLAYLISTS[area];
-    var pos = areaPos[area];
-    audio.addEventListener("loadedmetadata", function once() {
-      audio.removeEventListener("loadedmetadata", once);
-      if (pos.t < audio.duration) audio.currentTime = pos.t;
-      if (wasPlaying) audio.play().catch(function () {});
-    });
-    load(pos.track, false);
+    var level = userVolume();
+    function swap() {
+      area = next; PLAYLIST = PLAYLISTS[area];
+      var pos = areaPos[area];
+      audio.addEventListener("loadedmetadata", function once() {
+        audio.removeEventListener("loadedmetadata", once);
+        if (pos.t < audio.duration) audio.currentTime = pos.t;
+        if (wasPlaying) { audio.volume = 0; audio.play().catch(function () {}); fadeTo(level, FADE); }
+        else audio.volume = level;
+      });
+      load(pos.track, false);
+    }
+    if (wasPlaying) fadeTo(0, FADE, swap); else swap();
   }
+  function userVolume() { return typeof savedLevel === "number" ? savedLevel : audio.volume; }
   window.setMusicArea = setArea;
   function load(i, autoplay) {
     track = (i + PLAYLIST.length) % PLAYLIST.length;
@@ -216,14 +234,16 @@
     muteBtn.setAttribute("aria-pressed", String(audio.muted));
     muteBtn.setAttribute("aria-label", audio.muted ? "Unmute" : "Mute");
   }
+  var savedLevel = 0.7;
   function applyVolume(v) {
+    savedLevel = v; clearInterval(fadeTimer); fadeTimer = null;
     audio.volume = v;
     volSlider.value = Math.round(v * 100);
     if (v > 0) audio.muted = false;   // dragging the slider un-mutes
     updateMuteIcon();
     try { localStorage.setItem("volume", String(v)); } catch (e) {}
   }
-  masterVolume = function () { return audio.muted ? 0 : audio.volume; };
+  masterVolume = function () { return audio.muted ? 0 : savedLevel; };
   volSlider.addEventListener("input", function () { applyVolume(volSlider.value / 100); });
   muteBtn.addEventListener("click", function () {
     audio.muted = !audio.muted;
