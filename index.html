@@ -23,7 +23,7 @@
     </svg>
     <span>Hidden Leaf</span>
     <small>木ノ葉隠れの里</small>
-    <button class="who" id="who" type="button" hidden><span class="who-name"></span><span class="who-clan"></span></button>
+    <button class="who" id="who" type="button" hidden><span class="who-avatar" aria-hidden="true"></span><span class="who-text"><span class="who-name"></span><span class="who-clan"></span></span></button>
   </header>
 
   <main class="stage">
@@ -49,6 +49,83 @@
       <a href="#hokage"    data-title="Hokage|Tower"        data-blurb="The seat of the Hokage. Report in, and look out over the village." data-kanji="火">Hokage Tower</a>
     </nav>
   </main>
+
+  <!-- Residence: profile, rank, stats, character creator -->
+  <section class="res" id="residence" hidden aria-labelledby="res-title">
+    <div class="res-bg" aria-hidden="true"></div>
+    <header class="res-head">
+      <div>
+        <p class="kicker">自宅</p>
+        <h2 id="res-title" class="res-h">Residence</h2>
+      </div>
+      <a class="go res-back" href="#"><i aria-hidden="true">火</i>Back to the village</a>
+    </header>
+    <div class="res-grid">
+      <!-- card: identity + rank -->
+      <article class="res-card res-id">
+        <div class="res-avatar" id="res-avatar"></div>
+        <div class="res-idtext">
+          <p class="res-rank"><span class="rank-badge">Genin</span> <span class="rank-jp">下忍</span></p>
+          <h3 class="res-name" id="res-name">—</h3>
+          <p class="res-clan" id="res-clan"></p>
+          <form class="res-form" id="res-form">
+            <label>Shinobi name <input id="res-name-in" type="text" minlength="2" maxlength="24" required spellcheck="false"></label>
+            <label>Clan <select id="res-clan-in" name="clan">
+          <option value="Uzumaki">Uzumaki</option>
+          <option value="Uchiha">Uchiha</option>
+          <option value="Hyūga">Hyūga</option>
+          <option value="Nara">Nara</option>
+          <option value="Yamanaka">Yamanaka</option>
+          <option value="Akimichi">Akimichi</option>
+          <option value="Inuzuka">Inuzuka</option>
+          <option value="Aburame">Aburame</option>
+          <option value="Sarutobi">Sarutobi</option>
+          <option value="Senju">Senju</option>
+          <option value="Hatake">Hatake</option>
+          <option value="Haruno">Haruno</option>
+          <option value="Might">Might</option>
+          <option value="Yūhi">Yūhi</option>
+          <option value="Shimura">Shimura</option>
+          <option value="Kurama">Kurama</option>
+          <option value="Hōzuki">Hōzuki</option>
+          <option value="Kaguya">Kaguya</option>
+          <option value="No clan">No clan</option>
+        </select></label>
+            <p class="login-error" aria-live="polite"></p>
+            <button class="btn-ghost" type="submit">Save name &amp; clan</button>
+          </form>
+        </div>
+      </article>
+      <!-- card: stats -->
+      <article class="res-card res-stats">
+        <h3>Stats <span class="wip">in progress</span></h3>
+        <ul class="stat-list">
+          <li><span>Ninjutsu</span><i style="--v:20%"></i></li>
+          <li><span>Taijutsu</span><i style="--v:35%"></i></li>
+          <li><span>Genjutsu</span><i style="--v:10%"></i></li>
+          <li><span>Intelligence</span><i style="--v:30%"></i></li>
+          <li><span>Strength</span><i style="--v:25%"></i></li>
+          <li><span>Speed</span><i style="--v:30%"></i></li>
+          <li><span>Stamina</span><i style="--v:45%"></i></li>
+          <li><span>Hand seals</span><i style="--v:15%"></i></li>
+        </ul>
+        <p class="res-note">Stats will grow with training, missions and exams.</p>
+      </article>
+      <!-- card: character creator -->
+      <article class="res-card res-creator">
+        <h3>Appearance</h3>
+        <div class="creator">
+          <div class="creator-preview" id="creator-preview"></div>
+          <div class="creator-controls" id="creator-controls"></div>
+        </div>
+        <div class="creator-actions">
+          <button class="btn-ghost" type="button" id="creator-random">Randomise</button>
+          <button class="go" type="button" id="creator-save"><i aria-hidden="true">火</i>Save look</button>
+          <span class="res-saved" id="creator-status" aria-live="polite"></span>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <!-- Login: step 1 account, step 2 shinobi profile -->
   <section class="login" id="login" hidden>
@@ -83,12 +160,27 @@
         <input id="login-name" name="name" type="text" required minlength="2" maxlength="24" placeholder="e.g. Naruto" spellcheck="false">
       </label>
       <label>Clan
-        <input id="login-clan" name="clan" type="text" list="clans" maxlength="24" placeholder="e.g. Uzumaki (or none)" spellcheck="false">
-        <datalist id="clans">
-          <option value="Uzumaki"><option value="Uchiha"><option value="Hyūga"><option value="Nara"><option value="Yamanaka"><option value="Akimichi">
-          <option value="Inuzuka"><option value="Aburame"><option value="Sarutobi"><option value="Senju"><option value="Hatake"><option value="Haruno">
-          <option value="Might"><option value="Yūhi"><option value="Shimura"><option value="Kurama"><option value="No clan">
-        </datalist>
+        <select id="login-clan" name="clan">
+          <option value="Uzumaki">Uzumaki</option>
+          <option value="Uchiha">Uchiha</option>
+          <option value="Hyūga">Hyūga</option>
+          <option value="Nara">Nara</option>
+          <option value="Yamanaka">Yamanaka</option>
+          <option value="Akimichi">Akimichi</option>
+          <option value="Inuzuka">Inuzuka</option>
+          <option value="Aburame">Aburame</option>
+          <option value="Sarutobi">Sarutobi</option>
+          <option value="Senju">Senju</option>
+          <option value="Hatake">Hatake</option>
+          <option value="Haruno">Haruno</option>
+          <option value="Might">Might</option>
+          <option value="Yūhi">Yūhi</option>
+          <option value="Shimura">Shimura</option>
+          <option value="Kurama">Kurama</option>
+          <option value="Hōzuki">Hōzuki</option>
+          <option value="Kaguya">Kaguya</option>
+          <option value="No clan">No clan</option>
+        </select>
       </label>
       <p class="login-error" aria-live="polite"></p>
       <div class="login-actions">
@@ -151,6 +243,8 @@
 
   <script src="js/firebase-config.js"></script>
   <script src="js/account.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/residence.js"></script>
   <script src="js/menu.js"></script>
 </body>
 </html>

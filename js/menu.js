@@ -69,12 +69,13 @@
   var uc = document.getElementById("uc");
   var ucWhere = document.querySelector(".uc-where");
   function openUC(item) {
+    if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); return; }
     ucWhere.textContent = item.textContent;
-    uc.hidden = false;
+    uc.hidden = false; document.body.classList.add("modal");
     document.querySelector(".uc-back").focus();
   }
   function closeUC() {
-    uc.hidden = true;
+    uc.hidden = true; window.Residence.close(); document.body.classList.remove("modal");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
   }
@@ -87,7 +88,8 @@
   go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   go.addEventListener("click", function (e) { e.preventDefault(); if (current) { history.replaceState(null, "", current.getAttribute("href")); openUC(current); } });
   document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-select", 0.8); closeUC(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !uc.hidden) closeUC(); });
+  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-select", 0.8); closeUC(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden)) closeUC(); });
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
@@ -238,17 +240,18 @@
     who.hidden = !p;
     if (!p) return;
     who.querySelector(".who-name").textContent = p.name;
+    who.querySelector(".who-avatar").innerHTML = window.Avatar.render(Object.assign({}, window.Avatar.DEFAULT, p.avatar || {}));
     who.querySelector(".who-clan").textContent = p.clan && p.clan !== "No clan" ? p.clan + " clan" : "";
     who.title = "Your shinobi";
   }
   function showAuth() {
-    login.hidden = false; profileForm.hidden = true; authForm.hidden = false;
+    login.hidden = false; document.body.classList.add("modal"); profileForm.hidden = true; authForm.hidden = false;
     err(authForm, ""); authPw.value = "";
     document.getElementById("login-mode").textContent = S.online ? "Synced with the village records" : "Offline mode: saved in this browser only";
     setTimeout(function () { authEmail.focus(); }, 50);
   }
   function showProfile(editing) {
-    login.hidden = false; authForm.hidden = true; profileForm.hidden = false;
+    login.hidden = false; document.body.classList.add("modal"); authForm.hidden = true; profileForm.hidden = false;
     err(profileForm, "");
     loginName.value = editing && S.profile ? S.profile.name : "";
     loginClan.value = editing && S.profile ? S.profile.clan : "";
@@ -258,7 +261,7 @@
     document.getElementById("login-account").textContent = acct;
     setTimeout(function () { loginName.focus(); }, 50);
   }
-  function closeLogin() { login.hidden = true; }
+  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden) document.body.classList.remove("modal"); }
 
   // step 1: account
   authForm.addEventListener("submit", function (e) { e.preventDefault(); doAuth("signin"); });

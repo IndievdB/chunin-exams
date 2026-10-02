@@ -6,12 +6,14 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 
 | Menu | Route |
 |---|---|
-| Residence | `#residence` |
+| Residence | `#residence` — your shinobi's room: rank, name/clan editing, stats, and the character creator |
 | Academy | `#academy` |
 | Training Grounds | `#training` |
 | Missions | `#missions` |
 | Ninja Exams | `#exams` |
 | Hokage Tower | `#hokage` |
+
+The avatar is drawn as layered inline SVG (`js/avatar.js`): skin, hair style and colour, eyes, headband colour, outfit and markings, saved on the Firestore profile as an `avatar` map. Add new looks by extending `OPTIONS` and the matching draw function.
 
 The earlier built-out sections in `village.html` (training, exams, missions, academy, Might Guy's hall) are still there to reuse as these pages are filled in.
 

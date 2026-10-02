@@ -16,8 +16,13 @@
     var ok = function () { return Promise.resolve(); };
     api.signIn = api.signUp = api.guest = function () { api.user = { isAnonymous: true }; emit(); return ok(); };
     api.resetPassword = ok;
+    api.saveAvatar = function (avatar) {
+      api.profile = Object.assign({}, api.profile || {}, { avatar: avatar });
+      try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
+      emit(); return ok();
+    };
     api.saveProfile = function (name, clan) {
-      api.profile = { name: name, clan: clan };
+      api.profile = Object.assign({}, api.profile || {}, { name: name, clan: clan });
       try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
       emit(); return ok();
     };
@@ -70,6 +75,9 @@
       api.saveProfile = function (name, clan) {
         return F.setDoc(F.doc(db, "shinobi", auth.currentUser.uid),
           { name: name, clan: clan, email: auth.currentUser.email || null, updatedAt: F.serverTimestamp() }, { merge: true });
+      };
+      api.saveAvatar = function (avatar) {
+        return F.setDoc(F.doc(db, "shinobi", auth.currentUser.uid), { avatar: avatar, updatedAt: F.serverTimestamp() }, { merge: true });
       };
       api.signOut = function () { return A.signOut(auth); };
 
