@@ -7,7 +7,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 | Menu | Route |
 |---|---|
 | Residence | `#residence` — your shinobi's room: rank, name/clan editing, stats, and the character creator |
-| Academy | `#academy` |
+| Academy | `#academy` — Iruka-sensei's Python fundamentals: lessons with auto-checked problems in an in-browser sandbox |
 | Training Grounds | `#training` |
 | Missions | `#missions` |
 | Ninja Exams | `#exams` |
@@ -47,6 +47,10 @@ Setup:
 4. In **Build → Firestore Database**, create a database, then paste `firestore.rules` into the **Rules** tab and publish.
 
 Until a config is present the site runs in offline mode and keeps the profile in the browser's local storage. Both fit comfortably in Firebase's free Spark plan.
+
+## Academy (Python lessons)
+
+`js/lessons.js` holds the curriculum: topics (variables, lists, for/while loops, functions, classes, inheritance, imports, copies vs references), each with problems that have Iruka's dialogue, a task, starter code and a Python `check`. The check runs in the student's namespace after their code, with `_out` (what they printed) and `_src` (their source) available; raising `AssertionError("…")` fails with that message. Code runs in the browser via Pyodide, loaded from the jsDelivr CDN with the copy in `vendor/pyodide/` as a fallback. Solved problems are saved on the Firestore profile under `academy`.
 
 ## Music
 

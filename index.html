@@ -115,6 +115,46 @@
     </div>
   </section>
 
+  <!-- Academy: Iruka-sensei teaches Python fundamentals -->
+  <section class="acad" id="academy" hidden aria-labelledby="acad-title">
+    <div class="acad-bg" aria-hidden="true"></div>
+    <header class="res-head acad-head">
+      <div><p class="kicker">忍者学校</p><h2 id="acad-title" class="res-h">Academy</h2></div>
+      <a class="go res-back acad-back" href="#"><i aria-hidden="true">火</i>Back to the village</a>
+    </header>
+    <img class="iruka" id="iruka" src="assets/images/characters/iruka.png" alt="">
+    <nav class="acad-menu" id="acad-menu" aria-label="Lessons"></nav>
+    <div class="vn" id="vn">
+      <div class="vn-name">Iruka-sensei</div>
+      <p class="vn-text" id="vn-text"></p>
+      <button class="vn-next" id="vn-next" type="button" aria-label="Continue">▼</button>
+    </div>
+
+    <div class="panel-wrap acad-wrap" id="acad-wrap" hidden>
+      <article class="res-card panel sandbox" id="sandbox">
+        <button class="panel-x" type="button" aria-label="Close">✕</button>
+        <h3 id="sb-title">Problem</h3>
+        <p class="sb-task" id="sb-task"></p>
+        <div class="sb-grid">
+          <div class="sb-editor">
+            <div class="sb-label">main.py</div>
+            <textarea id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+          </div>
+          <div class="sb-output">
+            <div class="sb-label">Output</div>
+            <pre id="sb-out"></pre>
+          </div>
+        </div>
+        <div class="creator-actions">
+          <button class="btn-ghost" type="button" id="sb-run">▶ Run</button>
+          <button class="go" type="button" id="sb-submit"><i aria-hidden="true">火</i>Submit</button>
+          <button class="btn-ghost" type="button" id="sb-reset">Reset code</button>
+          <span class="res-saved" id="sb-status" aria-live="polite"></span>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <!-- Login: step 1 account, step 2 shinobi profile -->
   <section class="login" id="login" hidden>
     <form class="login-card" id="auth-form" autocomplete="on" hidden>
@@ -235,6 +275,8 @@
   <script src="js/account.js"></script>
   <script src="js/avatar.js"></script>
   <script src="js/residence.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/academy.js"></script>
   <script src="js/menu.js"></script>
 </body>
 </html>

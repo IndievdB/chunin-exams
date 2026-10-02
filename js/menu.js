@@ -70,6 +70,7 @@
   var ucWhere = document.querySelector(".uc-where");
   function openUC(item) {
     if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
+    if (item.getAttribute("href") === "#academy") { window.Academy.open(); document.body.classList.add("modal"); return; }
     ucWhere.textContent = item.textContent;
     document.querySelector(".uc-back").lastChild.textContent = "Back to the village";
     uc.hidden = false; document.body.classList.add("modal");
@@ -77,7 +78,7 @@
   }
   function closeUC() {
     if (!uc.hidden && !document.getElementById("residence").hidden) { uc.hidden = true; return; } // stats popup inside the room: back to the room
-    uc.hidden = true; window.Residence.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
+    uc.hidden = true; window.Residence.close(); window.Academy.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
   }
@@ -90,12 +91,13 @@
   go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   go.addEventListener("click", function (e) { e.preventDefault(); if (current) { history.replaceState(null, "", current.getAttribute("href")); openUC(current); } });
   document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.9); closeUC(); });
-  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.9); closeUC(); });
+  document.querySelectorAll(".res-back").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.9); closeUC(); }); });
   // every other button gets a woodblock tap; submenu entries (menu, Enter, hotspots) play the jutsu sound themselves
   document.addEventListener("click", function (e) {
     var b = e.target.closest("button, a.go");
     if (!b || b.closest(".menu") || b === go || b.classList.contains("hotspot") || b.classList.contains("uc-back") || b.classList.contains("res-back") || b.closest(".player")) return;
     if (b.type === "submit" && b.closest("#profile-form")) return;
+    if (b.classList.contains("lesson") || b.classList.contains("problem")) return; // academy plays its own
     sfx("sfx-tap", 0.8);
   });
   document.querySelector(".player").addEventListener("click", function (e) { if (e.target.closest("button")) sfx("sfx-tap", 0.6); });
@@ -104,7 +106,7 @@
     document.querySelector(".uc-back").lastChild.textContent = "Back to the room";
     document.querySelector(".uc-back").focus();
   };
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden)) closeUC(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden || !document.getElementById("academy").hidden)) closeUC(); });
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
@@ -301,7 +303,7 @@
     document.getElementById("login-account").textContent = acct;
     setTimeout(function () { loginName.focus(); }, 50);
   }
-  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden) document.body.classList.remove("modal"); }
+  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden && document.getElementById("academy").hidden) document.body.classList.remove("modal"); }
 
   // step 1: account
   authForm.addEventListener("submit", function (e) { e.preventDefault(); doAuth("signin"); });
