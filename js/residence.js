@@ -4,6 +4,7 @@
   "use strict";
   var S = window.Shinobi, AV = window.Avatar;
   var res = document.getElementById("residence");
+  var wrap = document.getElementById("panel-wrap"), roomMe = document.getElementById("room-me");
   var nameEl = document.getElementById("res-name"), clanEl = document.getElementById("res-clan");
   var avatarEl = document.getElementById("res-avatar");
   var form = document.getElementById("res-form"), nameIn = document.getElementById("res-name-in"), clanIn = document.getElementById("res-clan-in");
@@ -17,7 +18,20 @@
     clanEl.textContent = p.clan && p.clan !== "No clan" ? p.clan + " clan" : "No clan";
     nameIn.value = p.name || ""; clanIn.value = p.clan || "No clan";
     avatarEl.innerHTML = AV.render(cfgOf(p));
+    roomMe.innerHTML = AV.render(cfgOf(p));
   }
+  function openPanel(name) {
+    wrap.hidden = false;
+    wrap.querySelectorAll(".panel").forEach(function (el) { el.hidden = el.dataset.panel !== name; });
+    if (name === "look") { draft = cfgOf(S.profile); status.textContent = ""; paint(); }
+    var f = wrap.querySelector(".panel:not([hidden]) input, .panel:not([hidden]) button:not(.panel-x)");
+    if (f) f.focus();
+  }
+  function closePanel() { wrap.hidden = true; }
+  res.querySelectorAll(".hotspot").forEach(function (b) { b.addEventListener("click", function () { openPanel(b.dataset.panel); }); });
+  wrap.querySelectorAll(".panel-x").forEach(function (b) { b.addEventListener("click", closePanel); });
+  wrap.addEventListener("click", function (e) { if (e.target === wrap) closePanel(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !wrap.hidden) { e.stopPropagation(); closePanel(); } }, true);
   function paint() { preview.innerHTML = AV.render(draft); renderControls(); }
 
   function renderControls() {
@@ -66,7 +80,7 @@
 
   S.onChange(function () { if (!res.hidden) fill(); });
   window.Residence = {
-    open: function () { draft = cfgOf(S.profile); fill(); paint(); status.textContent = ""; res.hidden = false; res.scrollTop = 0; },
-    close: function () { res.hidden = true; }
+    open: function () { draft = cfgOf(S.profile); fill(); status.textContent = ""; closePanel(); res.hidden = false; res.scrollTop = 0; },
+    close: function () { closePanel(); res.hidden = true; }
   };
 })();

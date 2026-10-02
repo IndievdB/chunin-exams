@@ -50,54 +50,42 @@
     </nav>
   </main>
 
-  <!-- Residence: profile, rank, stats, character creator -->
+  <!-- Residence: the room, with clickable hotspots that open panels -->
   <section class="res" id="residence" hidden aria-labelledby="res-title">
     <div class="res-bg" aria-hidden="true"></div>
     <header class="res-head">
-      <div>
-        <p class="kicker">自宅</p>
-        <h2 id="res-title" class="res-h">Residence</h2>
-      </div>
+      <div><p class="kicker">自宅</p><h2 id="res-title" class="res-h">Residence</h2></div>
       <a class="go res-back" href="#"><i aria-hidden="true">火</i>Back to the village</a>
     </header>
-    <div class="res-grid">
-      <!-- card: identity + rank -->
-      <article class="res-card res-id">
-        <div class="res-avatar" id="res-avatar"></div>
-        <div class="res-idtext">
-          <p class="res-rank"><span class="rank-badge">Genin</span> <span class="rank-jp">下忍</span></p>
-          <h3 class="res-name" id="res-name">—</h3>
-          <p class="res-clan" id="res-clan"></p>
-          <form class="res-form" id="res-form">
-            <label>Shinobi name <input id="res-name-in" type="text" minlength="2" maxlength="24" required spellcheck="false"></label>
-            <label>Clan <select id="res-clan-in" name="clan">
-          <option value="Uzumaki">Uzumaki</option>
-          <option value="Uchiha">Uchiha</option>
-          <option value="Hyūga">Hyūga</option>
-          <option value="Nara">Nara</option>
-          <option value="Yamanaka">Yamanaka</option>
-          <option value="Akimichi">Akimichi</option>
-          <option value="Inuzuka">Inuzuka</option>
-          <option value="Aburame">Aburame</option>
-          <option value="Sarutobi">Sarutobi</option>
-          <option value="Senju">Senju</option>
-          <option value="Hatake">Hatake</option>
-          <option value="Haruno">Haruno</option>
-          <option value="Might">Might</option>
-          <option value="Yūhi">Yūhi</option>
-          <option value="Shimura">Shimura</option>
-          <option value="Kurama">Kurama</option>
-          <option value="Hōzuki">Hōzuki</option>
-          <option value="Kaguya">Kaguya</option>
-          <option value="No clan">No clan</option>
-        </select></label>
-            <p class="login-error" aria-live="polite"></p>
-            <button class="btn-ghost" type="submit">Save name &amp; clan</button>
-          </form>
+    <p class="res-hint">Click around the room.</p>
+    <div class="room">
+      <button class="hotspot" data-panel="profile" style="--x:67%;--y:17%" type="button"><span class="hs-dot"></span><span class="hs-label">Nightstand · name &amp; clan</span></button>
+      <button class="hotspot" data-panel="stats" style="--x:78%;--y:52%" type="button"><span class="hs-dot"></span><span class="hs-label">Bed · stats</span></button>
+      <button class="hotspot" data-panel="look" style="--x:21%;--y:47%" type="button"><span class="hs-dot"></span><span class="hs-label">Cabinet · appearance</span></button>
+      <div class="room-me" id="room-me" aria-hidden="true"></div>
+    </div>
+
+    <div class="panel-wrap" id="panel-wrap" hidden>
+      <article class="res-card panel" data-panel="profile" hidden>
+        <button class="panel-x" type="button" aria-label="Close">✕</button>
+        <h3>Shinobi Record</h3>
+        <div class="res-id">
+          <div class="res-avatar" id="res-avatar"></div>
+          <div class="res-idtext">
+            <p class="res-rank"><span class="rank-badge">Genin</span> <span class="rank-jp">下忍</span></p>
+            <h3 class="res-name" id="res-name">—</h3>
+            <p class="res-clan" id="res-clan"></p>
+            <form class="res-form" id="res-form">
+              <label>Shinobi name <input id="res-name-in" type="text" minlength="2" maxlength="24" required spellcheck="false"></label>
+              <label>Clan <select id="res-clan-in" name="clan"><option value="Uzumaki">Uzumaki</option><option value="Uchiha">Uchiha</option><option value="Hyūga">Hyūga</option><option value="Nara">Nara</option><option value="Yamanaka">Yamanaka</option><option value="Akimichi">Akimichi</option><option value="Inuzuka">Inuzuka</option><option value="Aburame">Aburame</option><option value="Sarutobi">Sarutobi</option><option value="Senju">Senju</option><option value="Hatake">Hatake</option><option value="Haruno">Haruno</option><option value="Might">Might</option><option value="Yūhi">Yūhi</option><option value="Shimura">Shimura</option><option value="Kurama">Kurama</option><option value="Hōzuki">Hōzuki</option><option value="Kaguya">Kaguya</option><option value="No clan">No clan</option></select></label>
+              <p class="login-error" aria-live="polite"></p>
+              <button class="btn-ghost" type="submit">Save name &amp; clan</button>
+            </form>
+          </div>
         </div>
       </article>
-      <!-- card: stats -->
-      <article class="res-card res-stats">
+      <article class="res-card panel res-stats" data-panel="stats" hidden>
+        <button class="panel-x" type="button" aria-label="Close">✕</button>
         <h3>Stats <span class="wip">in progress</span></h3>
         <ul class="stat-list">
           <li><span>Ninjutsu</span><i style="--v:20%"></i></li>
@@ -111,8 +99,8 @@
         </ul>
         <p class="res-note">Stats will grow with training, missions and exams.</p>
       </article>
-      <!-- card: character creator -->
-      <article class="res-card res-creator">
+      <article class="res-card panel res-creator" data-panel="look" hidden>
+        <button class="panel-x" type="button" aria-label="Close">✕</button>
         <h3>Appearance</h3>
         <div class="creator">
           <div class="creator-preview" id="creator-preview"></div>
@@ -214,7 +202,7 @@
     <div class="now">
       <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       <span class="track-name">—</span>
-      <span class="track-meta">placeholder loop · royalty-free</span>
+      <span class="track-meta">Naruto original soundtrack</span>
     </div>
     <div class="controls">
       <button id="play" title="Play / pause" aria-label="Play">

@@ -69,13 +69,13 @@
   var uc = document.getElementById("uc");
   var ucWhere = document.querySelector(".uc-where");
   function openUC(item) {
-    if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); return; }
+    if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
     ucWhere.textContent = item.textContent;
     uc.hidden = false; document.body.classList.add("modal");
     document.querySelector(".uc-back").focus();
   }
   function closeUC() {
-    uc.hidden = true; window.Residence.close(); document.body.classList.remove("modal");
+    uc.hidden = true; window.Residence.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
   }
@@ -111,11 +111,21 @@
   /* ---------- Music player ---------- */
   // Placeholder loops generated for this prototype (royalty-free). Swap the
   // files in assets/music/ and update this list when the real tracks arrive.
-  var PLAYLIST = [
-    { title: "Village at Dawn",   src: "assets/music/village-dawn.mp3" },
-    { title: "Training Grounds",  src: "assets/music/training-grounds.mp3" },
-    { title: "Exam Tension",      src: "assets/music/exam-tension.mp3" }
-  ];
+  // Two playlists: the village menu rotates through "village"; the Residence loops "residence".
+  var PLAYLISTS = {
+    village: [
+      { title: "Afternoon of Konoha", src: "assets/music/afternoon-of-konoha.mp3" },
+      { title: "Konohamaru's Theme",  src: "assets/music/konohamarus-theme.mp3" },
+      { title: "Sasuke's Theme",      src: "assets/music/sasukes-theme.mp3" },
+      { title: "Alone",               src: "assets/music/alone.mp3" },
+      { title: "Hinata vs Neji",      src: "assets/music/hinata-vs-neji.mp3" }
+    ],
+    residence: [
+      { title: "Fooling Mode",        src: "assets/music/fooling-mode.mp3" }
+    ]
+  };
+  var area = "village";
+  var PLAYLIST = PLAYLISTS[area];
   var audio = document.getElementById("audio");
   var player = document.querySelector(".player");
   var playBtn = document.getElementById("play");
@@ -132,6 +142,21 @@
     s = Math.floor(s);
     return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
   }
+  var areaPos = { village: { track: 0, t: 0 }, residence: { track: 0, t: 0 } };
+  function setArea(next) {
+    if (next === area) return;
+    areaPos[area] = { track: track, t: audio.currentTime };
+    var wasPlaying = !audio.paused;
+    area = next; PLAYLIST = PLAYLISTS[area];
+    var pos = areaPos[area];
+    audio.addEventListener("loadedmetadata", function once() {
+      audio.removeEventListener("loadedmetadata", once);
+      if (pos.t < audio.duration) audio.currentTime = pos.t;
+      if (wasPlaying) audio.play().catch(function () {});
+    });
+    load(pos.track, false);
+  }
+  window.setMusicArea = setArea;
   function load(i, autoplay) {
     track = (i + PLAYLIST.length) % PLAYLIST.length;
     audio.src = PLAYLIST[track].src;
@@ -146,7 +171,7 @@
   playBtn.addEventListener("click", function () { audio.paused ? audio.play() : audio.pause(); });
   audio.addEventListener("play", function () { setPlaying(true); });
   audio.addEventListener("pause", function () { setPlaying(false); });
-  audio.addEventListener("ended", function () { load(track + 1, true); });
+  audio.addEventListener("ended", function () { load(track + 1, true); }); // single-track lists simply repeat
   audio.addEventListener("timeupdate", function () {
     var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
     bar.style.width = pct + "%";
@@ -203,7 +228,7 @@
 
   /* remember track + position so a reload (or a future real page) resumes the music */
   function saveState() {
-    try { localStorage.setItem("music", JSON.stringify({ track: track, t: audio.currentTime, playing: !audio.paused })); } catch (e) {}
+    try { localStorage.setItem("music", JSON.stringify({ area: area, track: track, t: audio.currentTime, playing: !audio.paused })); } catch (e) {}
   }
   audio.addEventListener("timeupdate", function () { if (Math.floor(audio.currentTime) % 3 === 0) saveState(); });
   audio.addEventListener("pause", saveState);
@@ -319,13 +344,14 @@
     else showAuth();
   });
 
+  if (resume && PLAYLISTS[resume.area]) { area = resume.area; PLAYLIST = PLAYLISTS[area]; }
   if (resume && resume.track >= 0 && resume.track < PLAYLIST.length) {
-    load(resume.track, false);
     audio.addEventListener("loadedmetadata", function once() {
       audio.removeEventListener("loadedmetadata", once);
       if (resume.t && resume.t < audio.duration) audio.currentTime = resume.t;
       if (resume.playing) audio.play().catch(function () {});
     });
+    load(resume.track, false);
   } else {
     load(0, false);
   }
