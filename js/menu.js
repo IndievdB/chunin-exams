@@ -47,7 +47,7 @@
 
   function select(item, instant) {
     if (item === current) return;
-    if (!instant) sfx("sfx-hover", 0.5);
+    if (!instant) sfx("sfx-hover", 0.9);
     current = item;
     items.forEach(function (a) { a.classList.toggle("active", a === item); });
     go.href = item.href;
@@ -89,16 +89,16 @@
   });
   go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   go.addEventListener("click", function (e) { e.preventDefault(); if (current) { history.replaceState(null, "", current.getAttribute("href")); openUC(current); } });
-  document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.6); closeUC(); });
-  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.6); closeUC(); });
+  document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.9); closeUC(); });
+  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.9); closeUC(); });
   // every other button gets a woodblock tap; submenu entries (menu, Enter, hotspots) play the jutsu sound themselves
   document.addEventListener("click", function (e) {
     var b = e.target.closest("button, a.go");
     if (!b || b.closest(".menu") || b === go || b.classList.contains("hotspot") || b.classList.contains("uc-back") || b.classList.contains("res-back") || b.closest(".player")) return;
     if (b.type === "submit" && b.closest("#profile-form")) return;
-    sfx("sfx-tap", 0.45);
+    sfx("sfx-tap", 0.8);
   });
-  document.querySelector(".player").addEventListener("click", function (e) { if (e.target.closest("button")) sfx("sfx-tap", 0.3); });
+  document.querySelector(".player").addEventListener("click", function (e) { if (e.target.closest("button")) sfx("sfx-tap", 0.6); });
   window.openUnderConstruction = function (label) {
     ucWhere.textContent = label; uc.hidden = false; document.body.classList.add("modal");
     document.querySelector(".uc-back").lastChild.textContent = "Back to the room";
