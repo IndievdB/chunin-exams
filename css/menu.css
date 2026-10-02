@@ -180,7 +180,7 @@ body.modal .player, body.modal .player.mini { background: none; }
 .who-clan:empty { display: none; }
 .who { display: flex; gap: 8px; align-items: center; max-height: 48px; }
 .who-avatar { display: block; width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; overflow: hidden; position: relative; background: #0d1b28; border: 2px solid var(--gold); }
-.who-avatar svg { position: absolute; width: 60px; height: 72px; left: -15px; top: -20px; }
+.who-avatar svg { position: absolute; width: 48px; height: 58px; left: -9px; top: -13px; }
 .who-avatar:empty { display: none; }
 .who-text { display: grid; }
 
