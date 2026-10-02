@@ -310,8 +310,8 @@ body.modal .player, body.modal .player.mini { background: none; }
 .acad[hidden] { display: none; }
 .acad-head { margin-bottom: 0; }
 .acad-body { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); align-items: end; min-height: 0; }
-.acad-bg { position: fixed; inset: 0; z-index: -1; background: #3a4a52 url(../assets/images/locations/academy.jpg) center bottom / cover no-repeat; }
-.acad-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(5,20,35,.35), transparent 30%, transparent 60%, rgba(5,20,35,.6)); }
+.acad-bg { position: fixed; inset: 0; z-index: -1; background: #3a4a52 url(../assets/images/locations/academy.jpg) center / cover no-repeat; }
+.acad-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(5,20,35,.45), rgba(5,20,35,.15) 30%, rgba(5,20,35,.15) 60%, rgba(5,20,35,.6)); }
 .iruka { justify-self: start; align-self: end; height: 100%; max-height: 100%; max-width: 100%; object-fit: contain; object-position: left bottom; filter: drop-shadow(0 12px 14px rgba(0,0,0,.55)); pointer-events: none; animation: breathe 5s ease-in-out infinite; min-height: 0; }
 @keyframes breathe { 50% { transform: translateY(-4px); } }
 .acad-menu { align-self: start; max-height: 100%; overflow: auto; display: grid; align-content: start; gap: 8px; padding: 4px; scrollbar-width: thin; }
