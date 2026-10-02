@@ -218,7 +218,7 @@ window.LESSONS = [
           say: "index() tells you the position of a value. Pair it with len to describe a list.",
           task: "Make a list called `jonin` with Kakashi, Asuma, Kurenai, Guy. Print the position of `'Kurenai'` using `index`, then print how many jonin there are, then print the first and last names on one line separated by a space.",
           examples: ["It should print:\n2\n4\nKakashi Guy"],
-          check: "assert '.index(' in _src, 'Use jonin.index(\"Kurenai\").'\nlines = [l.strip() for l in _out.strip().splitlines()]\nassert lines[:1] == ['2'], f'First line should be 2 (Kurenai\'s position), got {lines[:1]}'\nassert lines[1:2] == ['4'], f'Second line should be 4 (len), got {lines[1:2]}'\nassert lines[2:3] == ['Kakashi Guy'], f'Third line should be \"Kakashi Guy\", got {lines[2:3]}'",
+          check: "assert '.index(' in _src, 'Use jonin.index(\"Kurenai\").'\nlines = [l.strip() for l in _out.strip().splitlines()]\nassert lines[:1] == ['2'], f'First line should be 2 (the position of Kurenai), got {lines[:1]}'\nassert lines[1:2] == ['4'], f'Second line should be 4 (len), got {lines[1:2]}'\nassert lines[2:3] == ['Kakashi Guy'], f'Third line should be Kakashi Guy, got {lines[2:3]}'",
           solution: "jonin = ['Kakashi', 'Asuma', 'Kurenai', 'Guy']\nprint(jonin.index('Kurenai'))\nprint(len(jonin))\nprint(jonin[0], jonin[-1])" },
         { id: "c6h", title: "Reverse the formation",
           say: "reverse() flips a list end to end. That's different from sorting — it doesn't care about the values, only the order.",
