@@ -110,7 +110,8 @@
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
   document.addEventListener("keydown", function (e) {
-    if (e.target.tagName === "INPUT") return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+    if (!document.getElementById("residence").hidden || !document.getElementById("academy").hidden || !login.hidden) return; // menu keys only on the menu
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       step(e.key === "ArrowDown" ? 1 : -1);
