@@ -17,22 +17,23 @@
 
   function hairBack(style, c) {
     switch (style) {
-      case "long": return '<path d="M52 92 q-10 60 4 112 h88 q14 -52 4 -112 Z" fill="' + c + '"/>';
-      case "ponytail": return '<path d="M100 40 q46 10 44 60 q12 30 -14 56 q-10 -30 -8 -56 Z" fill="' + c + '"/>';
-      case "bun": return '<circle cx="100" cy="36" r="18" fill="' + c + '"/>';
+      case "long": return '<path d="M58 92 q-8 60 4 112 h76 q12 -52 4 -112 Z" fill="' + c + '"/>';
+      case "ponytail": return '<path d="M100 42 q42 10 40 58 q12 30 -14 56 q-10 -30 -8 -56 Z" fill="' + c + '"/>';
+      case "bun": return '<circle cx="100" cy="40" r="17" fill="' + c + '"/>';
       default: return "";
     }
   }
   function hairFront(style, c) {
+    // head is 60..140 wide at the brow line (y~96); fronts sit inside that, spikes may poke out above
     var d = "";
     switch (style) {
-      case "spiky": d = "M44 96 L38 50 L62 68 L70 28 L86 62 L100 18 L114 62 L130 28 L138 68 L162 50 L156 96 Q128 70 100 76 Q72 70 44 96 Z"; break;
-      case "bowl": d = "M42 100 Q40 36 100 34 Q160 36 158 100 L146 100 Q120 76 100 80 Q80 76 54 100 Z"; break;
-      case "long": d = "M42 110 Q40 40 100 36 Q160 40 158 110 L150 92 Q130 66 100 70 Q70 66 50 92 Z"; break;
-      case "ponytail": d = "M46 96 Q44 44 100 40 Q156 44 154 96 L140 84 Q120 66 100 72 Q80 66 60 84 Z"; break;
-      case "short": d = "M48 92 Q46 42 100 40 Q154 42 152 92 L142 82 Q118 62 100 70 Q82 62 58 82 Z"; break;
-      case "bun": d = "M48 92 Q46 48 100 46 Q154 48 152 92 L140 82 Q118 66 100 72 Q82 66 60 82 Z"; break;
-      case "shaggy": d = "M40 104 L46 60 L58 78 L66 44 L82 72 L100 30 L118 72 L134 44 L142 78 L154 60 L160 104 L146 96 Q122 70 100 78 Q78 70 54 96 Z"; break;
+      case "spiky": d = "M56 96 L48 54 L68 68 L74 30 L88 62 L100 20 L112 62 L126 30 L132 68 L152 54 L144 96 Q124 74 100 78 Q76 74 56 96 Z"; break;
+      case "bowl": d = "M54 100 Q52 38 100 36 Q148 38 146 100 L136 100 Q118 78 100 82 Q82 78 64 100 Z"; break;
+      case "long": d = "M54 110 Q52 42 100 38 Q148 42 146 110 L140 94 Q122 70 100 74 Q78 70 60 94 Z"; break;
+      case "ponytail": d = "M56 96 Q54 46 100 42 Q146 46 144 96 L134 86 Q118 68 100 74 Q82 68 66 86 Z"; break;
+      case "short": d = "M58 92 Q56 44 100 42 Q144 44 142 92 L134 84 Q116 64 100 72 Q84 64 66 84 Z"; break;
+      case "bun": d = "M58 92 Q56 50 100 48 Q144 50 142 92 L132 84 Q116 68 100 74 Q84 68 68 84 Z"; break;
+      case "shaggy": d = "M52 104 L56 62 L66 78 L72 46 L86 72 L100 34 L114 72 L128 46 L134 78 L144 62 L148 104 L138 96 Q120 72 100 80 Q80 72 62 96 Z"; break;
       default: return "";
     }
     return '<path d="' + d + '" fill="' + c + '" stroke="#1a1208" stroke-width="2.5" stroke-linejoin="round"/>';
@@ -101,8 +102,8 @@
   function marks(kind, skin) {
     switch (kind) {
       case "whiskers": return '<g stroke="#1a1208" stroke-width="2" stroke-linecap="round" opacity=".8"><path d="M62 126 h12 M61 132 h13 M62 138 h12 M126 126 h12 M126 132 h13 M126 138 h12"/></g>';
-      case "scar": return '<path d="M78 134 q22 4 44 0" fill="none" stroke="#a65a4a" stroke-width="3" stroke-linecap="round"/>';
-      case "mask": return '<path d="M58 128 q42 50 84 0 l0 36 q-42 28 -84 0 Z" fill="#2d3a5e" stroke="#1a1208" stroke-width="2"/>';
+      case "scar": return '<path d="M82 133 q18 4 36 0" fill="none" stroke="#a65a4a" stroke-width="3" stroke-linecap="round"/><path d="M90 130 v7 M100 131 v7 M110 130 v7" stroke="#a65a4a" stroke-width="1.5" stroke-linecap="round"/>';
+      case "mask": return '<path d="M63 126 Q100 170 137 126 L137 142 Q126 160 118 164 Q108 169 100 169 Q92 169 82 164 Q74 160 63 142 Z" fill="#2d3a5e" stroke="#1a1208" stroke-width="2"/>';
       case "glasses": return '<g fill="none" stroke="#1a1208" stroke-width="2.5"><circle cx="83" cy="118" r="12"/><circle cx="117" cy="118" r="12"/><path d="M95 118 h10 M71 116 l-8 -4 M129 116 l8 -4"/></g>';
       case "clanmark": return '<path d="M100 132 l-6 10 h12 Z" fill="#c62828"/><path d="M68 110 l-10 -6 M132 110 l10 -6" stroke="#c62828" stroke-width="4" stroke-linecap="round"/>';
       default: return "";
