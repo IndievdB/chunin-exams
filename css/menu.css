@@ -16,8 +16,9 @@ html, body { height: 100%; }
 body {
   font-family: "Reggae One", "Noto Sans JP", system-ui, sans-serif;
   color: #fff; background: #0b1f2e; overflow: hidden;
-  display: grid; grid-template-rows: auto minmax(0, 1fr); padding-bottom: 72px; box-sizing: border-box;
+  display: grid; grid-template-rows: auto minmax(0, 1fr); grid-auto-rows: 0; padding-bottom: 72px; box-sizing: border-box;
 }
+/* anything injected into <body> by browser extensions lands in a zero-height implicit row */
 .bg {
   position: fixed; inset: 0; z-index: -2;
   background: url(../assets/images/locations/konoha-wide.jpg) center bottom / cover no-repeat;
@@ -37,7 +38,7 @@ body {
 
 /* ---------- ribbon ---------- */
 .ribbon {
-  justify-self: start; display: flex; align-items: center; gap: 14px;
+  grid-area: 1 / 1; justify-self: start; display: flex; align-items: center; gap: 14px;
   margin-top: 22px; padding: 10px 60px 10px 36px; max-height: 110px; overflow: hidden; line-height: 1.3;
   background: linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.55) 70%, transparent);
   font-family: var(--display); font-size: clamp(26px, 3.4vw, 44px); letter-spacing: 2px; color: var(--gold);
@@ -47,7 +48,7 @@ body {
 .ribbon small { font-family: var(--jp); font-size: .4em; color: #fff; letter-spacing: 5px; text-shadow: 1px 1px 0 #000; align-self: flex-end; margin-bottom: .55em; }
 
 /* ---------- stage ---------- */
-.stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; align-content: center; padding: 0 4vw; min-height: 0; max-height: 100%; }
+.stage { grid-area: 2 / 1; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; align-content: center; padding: 0 4vw; min-height: 0; max-height: 100%; }
 
 /* selector: title, blurb, enter */
 .hero { position: relative; z-index: 2; display: grid; justify-items: center; gap: 14px; padding: 0 3vw; min-width: 0; }

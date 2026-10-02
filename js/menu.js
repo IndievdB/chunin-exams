@@ -371,23 +371,3 @@
   }
 })();
 
-/* temporary layout diagnostic: open the site with ?debug to see body children and heights */
-if (location.search.indexOf("debug") >= 0) {
-  (function () {
-    var box = document.createElement("pre");
-    box.style.cssText = "position:fixed;left:8px;bottom:80px;z-index:999;background:rgba(0,0,0,.85);color:#0f0;font:12px/1.4 monospace;padding:8px;max-width:60vw;max-height:60vh;overflow:auto;white-space:pre-wrap";
-    document.body.appendChild(box);
-    function dump() {
-      var lines = ["viewport " + innerWidth + "x" + innerHeight + "  body " + document.body.offsetHeight + "  rows " + getComputedStyle(document.body).gridTemplateRows];
-      Array.prototype.forEach.call(document.body.children, function (el) {
-        var r = el.getBoundingClientRect(); var cs = getComputedStyle(el);
-        if (el === box) return;
-        lines.push((el.tagName + "." + (el.className && el.className.baseVal === undefined ? el.className : "") + "#" + el.id).slice(0, 40) + "  top " + Math.round(r.top) + " h " + Math.round(r.height) + "  " + cs.display + "/" + cs.position + (el.hidden ? " [hidden]" : ""));
-      });
-      var s = document.querySelector(".stage").getBoundingClientRect(), t = document.querySelector(".title").getBoundingClientRect();
-      lines.push("stage top " + Math.round(s.top) + " h " + Math.round(s.height) + "   title top " + Math.round(t.top) + " h " + Math.round(t.height));
-      box.textContent = lines.join("\n");
-    }
-    dump(); setInterval(dump, 1000);
-  })();
-}
