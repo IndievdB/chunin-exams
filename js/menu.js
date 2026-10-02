@@ -71,6 +71,7 @@
   function openUC(item) {
     if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
     ucWhere.textContent = item.textContent;
+    document.querySelector(".uc-back").lastChild.textContent = "Back to the village";
     uc.hidden = false; document.body.classList.add("modal");
     document.querySelector(".uc-back").focus();
   }
@@ -98,7 +99,11 @@
     sfx("sfx-tap", 0.45);
   });
   document.querySelector(".player").addEventListener("click", function (e) { if (e.target.closest("button")) sfx("sfx-tap", 0.3); });
-  window.openUnderConstruction = function (label) { ucWhere.textContent = label; uc.hidden = false; document.body.classList.add("modal"); document.querySelector(".uc-back").focus(); };
+  window.openUnderConstruction = function (label) {
+    ucWhere.textContent = label; uc.hidden = false; document.body.classList.add("modal");
+    document.querySelector(".uc-back").lastChild.textContent = "Back to the room";
+    document.querySelector(".uc-back").focus();
+  };
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden)) closeUC(); });
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
