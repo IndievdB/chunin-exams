@@ -124,7 +124,7 @@
   // deep link: #training etc. selects that item and opens its overlay
   var start = items.filter(function (a) { return a.getAttribute("href") === location.hash; })[0];
   select(start || items[0], true);
-  if (start) openUC(start);
+  if (start) setTimeout(function () { openUC(start); }, 0); // after the player below is set up
 
   /* ---------- Music player ---------- */
   // Placeholder loops generated for this prototype (royalty-free). Swap the
@@ -138,10 +138,14 @@
       { title: "Hinata vs Neji",      src: "assets/music/hinata-vs-neji.mp3" }
     ],
     residence: [
-      { title: "Fooling Mode",        src: "assets/music/fooling-mode.mp3" }
+      { title: "Fooling Mode",        src: "assets/music/fooling-mode.mp3" },
+      { title: "Daylight of Konoha",  src: "assets/music/daylight-of-konoha.mp3" },
+      { title: "Old Friend",          src: "assets/music/old-friend.mp3" }
     ],
     academy: [
-      { title: "Sasuke's Theme",      src: "assets/music/sasukes-theme.mp3" }
+      { title: "Sasuke's Theme",        src: "assets/music/sasukes-theme.mp3" },
+      { title: "Survival Examination",  src: "assets/music/survival-examination.mp3" },
+      { title: "Fake",                  src: "assets/music/fake.mp3" }
     ]
   };
   var area = "village";
@@ -286,6 +290,17 @@
   }
   document.addEventListener("pointerdown", firstInteraction);
   document.addEventListener("keydown", firstInteraction);
+  /* ---------- random shinobi names ---------- */
+  var GIVEN = ["Akira", "Haru", "Ren", "Sora", "Kenji", "Yuki", "Riku", "Kaito", "Hana", "Mio", "Aoi", "Rin", "Kaede", "Taiga", "Shin", "Hikaru", "Tomo", "Jun", "Kazuki", "Ayame", "Daichi", "Mina", "Ryo", "Sayuri", "Takumi", "Nozomi", "Isamu", "Kiri", "Hayate", "Suzume", "Genma", "Raido", "Mitsuki", "Yugao", "Hayase", "Tenma", "Kotetsu", "Izumo"];
+  var EPITHETS = ["of the Mist", "the Swift", "Copy-Nin", "of the Falling Leaf", "the Silent", "Shadow-Step", "the Unbroken", "Blue Flame", "of the Hidden Path", "Iron Fist", "Thunder-Hand", "the Patient", "Nine-Lives", "Red Thread", "Storm-Caller", "the Wanderer"];
+  function randomName() {
+    var g = GIVEN[Math.floor(Math.random() * GIVEN.length)];
+    return Math.random() < 0.45 ? g + " " + EPITHETS[Math.floor(Math.random() * EPITHETS.length)] : g;
+  }
+  document.querySelectorAll("[data-random]").forEach(function (b) {
+    b.addEventListener("click", function () { var i = document.getElementById(b.dataset.random); i.value = randomName(); i.focus(); });
+  });
+
   /* ---------- Shinobi login: account (email/password or guest), then profile ---------- */
   var S = window.Shinobi;
   var login = document.getElementById("login");

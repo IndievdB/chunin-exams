@@ -59,9 +59,9 @@
     </header>
     <p class="res-hint">Click around the room.</p>
     <div class="room">
-      <button class="hotspot" data-panel="profile" style="--x:67%;--y:17%" type="button"><span class="hs-dot"></span><span class="hs-label">Nightstand · name &amp; clan</span></button>
-      <button class="hotspot" data-panel="stats" style="--x:78%;--y:52%" type="button"><span class="hs-dot"></span><span class="hs-label">Bed · stats</span></button>
-      <button class="hotspot" data-panel="look" style="--x:21%;--y:47%" type="button"><span class="hs-dot"></span><span class="hs-label">Cabinet · appearance</span></button>
+      <button class="hotspot" data-panel="profile" style="--x:67%;--y:17%" type="button"><span class="hs-dot">名</span><span class="hs-label">Nightstand · name &amp; clan</span></button>
+      <button class="hotspot" data-panel="stats" style="--x:78%;--y:52%" type="button"><span class="hs-dot">力</span><span class="hs-label">Bed · stats</span></button>
+      <button class="hotspot" data-panel="look" style="--x:21%;--y:47%" type="button"><span class="hs-dot">姿</span><span class="hs-label">Cabinet · appearance</span></button>
       <div class="room-me" id="room-me" aria-hidden="true"></div>
     </div>
 
@@ -76,7 +76,7 @@
             <h3 class="res-name" id="res-name">—</h3>
             <p class="res-clan" id="res-clan"></p>
             <form class="res-form" id="res-form">
-              <label>Shinobi name <input id="res-name-in" type="text" minlength="2" maxlength="24" required spellcheck="false"></label>
+              <label>Shinobi name <span class="name-row"><input id="res-name-in" type="text" minlength="2" maxlength="24" required spellcheck="false"><button class="btn-ghost dice" type="button" data-random="res-name-in" title="Random name" aria-label="Random name">🎲</button></span></label>
               <label>Clan <select id="res-clan-in" name="clan"><option value="Uzumaki">Uzumaki</option><option value="Uchiha">Uchiha</option><option value="Hyūga">Hyūga</option><option value="Nara">Nara</option><option value="Yamanaka">Yamanaka</option><option value="Akimichi">Akimichi</option><option value="Inuzuka">Inuzuka</option><option value="Aburame">Aburame</option><option value="Sarutobi">Sarutobi</option><option value="Senju">Senju</option><option value="Hatake">Hatake</option><option value="Haruno">Haruno</option><option value="Might">Might</option><option value="Yūhi">Yūhi</option><option value="Shimura">Shimura</option><option value="Kurama">Kurama</option><option value="Hōzuki">Hōzuki</option><option value="Kaguya">Kaguya</option><option value="No clan">No clan</option></select></label>
               <p class="login-error" aria-live="polite"></p>
               <button class="btn-ghost" type="submit">Save name &amp; clan</button>
@@ -137,7 +137,18 @@
         <button class="panel-x" type="button" aria-label="Close">✕</button>
         <h3 id="sb-title">Problem</h3>
         <p class="sb-task" id="sb-task"></p>
-        <div class="sb-grid">
+        <div class="mc" id="mc" hidden>
+          <pre class="mc-code" id="mc-code"></pre>
+          <p class="mc-q" id="mc-q"></p>
+          <div class="mc-choices" id="mc-choices"></div>
+          <p class="mc-explain" id="mc-explain" hidden></p>
+          <div class="creator-actions">
+            <button class="go" type="button" id="mc-submit"><i aria-hidden="true">火</i>Submit</button>
+            <button class="btn-ghost" type="button" id="mc-solution">Show solution</button>
+            <span class="res-saved" id="mc-status" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="sb-grid" id="sb-grid">
           <div class="sb-editor">
             <div class="sb-label">main.py</div>
             <textarea id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
@@ -147,12 +158,15 @@
             <pre id="sb-out"></pre>
           </div>
         </div>
-        <div class="creator-actions">
+        <div class="creator-actions" id="sb-actions">
           <button class="btn-ghost" type="button" id="sb-run">▶ Run</button>
           <button class="go" type="button" id="sb-submit"><i aria-hidden="true">火</i>Submit</button>
-          <button class="btn-ghost" type="button" id="sb-reset">Reset code</button>
+          <button class="btn-ghost" type="button" id="sb-hint" hidden>Hint</button>
+          <button class="btn-ghost" type="button" id="sb-solution">Show solution</button>
+          <button class="btn-ghost" type="button" id="sb-reset">Clear</button>
           <span class="res-saved" id="sb-status" aria-live="polite"></span>
         </div>
+        <p class="sb-hinttext" id="sb-hinttext" hidden></p>
       </article>
     </div>
   </section>
@@ -187,7 +201,7 @@
       <h2>Shinobi Registration</h2>
       <p class="login-blurb">State your name and clan before entering the village.</p>
       <label>Shinobi name
-        <input id="login-name" name="name" type="text" required minlength="2" maxlength="24" placeholder="e.g. Naruto" spellcheck="false">
+        <span class="name-row"><input id="login-name" name="name" type="text" required minlength="2" maxlength="24" placeholder="e.g. Naruto" spellcheck="false"><button class="btn-ghost dice" type="button" data-random="login-name" title="Random name" aria-label="Random name">🎲</button></span>
       </label>
       <label>Clan
         <select id="login-clan" name="clan">
