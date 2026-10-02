@@ -28,7 +28,13 @@
     if (f) f.focus();
   }
   function closePanel() { wrap.hidden = true; }
-  res.querySelectorAll(".hotspot").forEach(function (b) { b.addEventListener("click", function () { openPanel(b.dataset.panel); }); });
+  res.querySelectorAll(".hotspot").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var a = document.getElementById("sfx-select").cloneNode(); a.volume = 0.8 * (document.getElementById("audio").muted ? 0 : document.getElementById("audio").volume); a.play().catch(function () {});
+      if (b.dataset.panel === "stats") { window.openUnderConstruction("Stats"); return; }
+      openPanel(b.dataset.panel);
+    });
+  });
   wrap.querySelectorAll(".panel-x").forEach(function (b) { b.addEventListener("click", closePanel); });
   wrap.addEventListener("click", function (e) { if (e.target === wrap) closePanel(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !wrap.hidden) { e.stopPropagation(); closePanel(); } }, true);

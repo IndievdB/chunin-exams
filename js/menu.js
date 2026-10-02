@@ -75,6 +75,7 @@
     document.querySelector(".uc-back").focus();
   }
   function closeUC() {
+    if (!uc.hidden && !document.getElementById("residence").hidden) { uc.hidden = true; return; } // stats popup inside the room: back to the room
     uc.hidden = true; window.Residence.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
@@ -87,8 +88,17 @@
   });
   go.addEventListener("pointerdown", function () { sfx("sfx-select", 0.8); });
   go.addEventListener("click", function (e) { e.preventDefault(); if (current) { history.replaceState(null, "", current.getAttribute("href")); openUC(current); } });
-  document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-select", 0.8); closeUC(); });
-  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-select", 0.8); closeUC(); });
+  document.querySelector(".uc-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.6); closeUC(); });
+  document.querySelector(".res-back").addEventListener("click", function (e) { e.preventDefault(); sfx("sfx-back", 0.6); closeUC(); });
+  // every other button gets a woodblock tap; submenu entries (menu, Enter, hotspots) play the jutsu sound themselves
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button, a.go");
+    if (!b || b.closest(".menu") || b === go || b.classList.contains("hotspot") || b.classList.contains("uc-back") || b.classList.contains("res-back") || b.closest(".player")) return;
+    if (b.type === "submit" && b.closest("#profile-form")) return;
+    sfx("sfx-tap", 0.45);
+  });
+  document.querySelector(".player").addEventListener("click", function (e) { if (e.target.closest("button")) sfx("sfx-tap", 0.3); });
+  window.openUnderConstruction = function (label) { ucWhere.textContent = label; uc.hidden = false; document.body.classList.add("modal"); document.querySelector(".uc-back").focus(); };
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && (!uc.hidden || !document.getElementById("residence").hidden)) closeUC(); });
   uc.addEventListener("click", function (e) { if (e.target === uc) closeUC(); });
   // keyboard: arrows cycle, Enter follows the active link
@@ -326,10 +336,9 @@
   });
   document.getElementById("profile-cancel").addEventListener("click", closeLogin);
   document.getElementById("profile-signout").addEventListener("click", function () {
-    sfx("sfx-hover", 0.5);
     S.signOut().then(function () { showWho(null); showAuth(); });
   });
-  who.addEventListener("click", function () { sfx("sfx-hover", 0.5); showProfile(true); });
+  who.addEventListener("click", function () { showProfile(true); });
 
   // react to auth / profile changes (sign-in from step 1 moves to step 2 or straight in)
   S.onChange(function () {
