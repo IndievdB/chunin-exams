@@ -44,7 +44,7 @@
       var all = allProblems(rank), n = solved(all);
       var b = document.createElement("button"); b.type = "button";
       b.className = "rank-tab" + (openRank === rank.id ? " open" : "") + (n === all.length ? " rank-done" : "");
-      b.innerHTML = "<b>" + rank.rank + "</b><small>" + rank.title.split(" ")[0] + "</small><span class='rank-p'>" + n + "/" + all.length + "</span>";
+      b.innerHTML = "<b>" + rank.rank + "</b><small>" + (rank.short || rank.title.split(" ")[0]) + "</small><span class='rank-p'>" + n + "/" + all.length + "</span>";
       b.title = RANK_NAMES[rank.rank] + ": " + rank.title;
       b.addEventListener("click", function () {
         sfx("sfx-hover", 0.9);
@@ -60,7 +60,7 @@
     var title = document.createElement("div"); title.className = "rank-title"; title.textContent = RANK_NAMES[rank.rank] + " · " + rank.title; menu.appendChild(title);
     rank.topics.forEach(function (topic) {
       var n = solved(topic.problems);
-      if (rank.topics.length > 1) {
+      {
         var b = document.createElement("button"); b.type = "button";
         b.className = "lesson" + (openTopic === topic.id ? " open" : "") + (n === topic.problems.length ? " lesson-done" : "");
         b.innerHTML = '<span class="lesson-k">' + rank.kanji + '</span><span class="lesson-t">' + topic.title + '</span><span class="lesson-p">' + n + "/" + topic.problems.length + "</span>";
@@ -88,6 +88,7 @@
     mc.hidden = !isMC; sbGrid.hidden = isMC;
     document.getElementById("sb-actions").hidden = isMC;
     hintText.hidden = true; hintText.textContent = "";
+    document.getElementById("sb-examples").hidden = true;
     if (isMC) {
       document.getElementById("sb-task").textContent = p.type === "output" ? "Read the code and type exactly what it prints." : "Read the code and predict the output.";
       document.getElementById("mc-code").textContent = p.code;
@@ -115,6 +116,8 @@
       return;
     }
     document.getElementById("sb-task").innerHTML = p.task.replace(/`([^`]+)`/g, "<code>$1</code>");
+    var ex = document.getElementById("sb-examples"); ex.innerHTML = ""; ex.hidden = !(p.examples && p.examples.length);
+    (p.examples || []).forEach(function (e) { var pre = document.createElement("pre"); pre.textContent = e; ex.appendChild(pre); });
     code.value = p.starter || ""; out.textContent = ""; status.textContent = "";
     hintBtn.hidden = !p.hint;
     wrap.hidden = false;
