@@ -9,6 +9,8 @@
   var py = null, pyLoading = null;
   var RANK_NAMES = { D: "D-rank", C: "C-rank", B: "B-rank", A: "A-rank" };
 
+  function sting() { if (window.playSting) window.playSting(); }
+  function unsting() { if (window.stopSting) window.stopSting(); }
   function sfx(id, vol) { var a = document.getElementById(id).cloneNode(); var m = document.getElementById("audio"); a.volume = vol * (m.muted ? 0 : m.volume); a.play().catch(function () {}); }
   function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
@@ -197,8 +199,8 @@
         var ta = $(".mc-input");
         if (!ta.value.trim()) { mcStatus.textContent = "Type the output first."; return; }
         sfx("sfx-tap", 0.8); ex2.textContent = current.explain; ex2.hidden = false;
-        if (norm(ta.value) === norm(current.expected)) { ta.classList.remove("wrong"); ta.classList.add("right"); mcStatus.textContent = "Correct!"; save(current.id).then(renderMenu); say(["Correct. " + current.explain, "Next one when you're ready."]); }
-        else { ta.classList.add("wrong"); mcStatus.textContent = "Not quite — it prints:\n" + current.expected; say(["Not quite. " + current.explain]); }
+        if (norm(ta.value) === norm(current.expected)) { ta.classList.remove("wrong"); ta.classList.add("right"); mcStatus.textContent = "Correct!"; unsting(); save(current.id).then(renderMenu); say(["Correct. " + current.explain, "Next one when you're ready."]); }
+        else { sting(); ta.classList.add("wrong"); mcStatus.textContent = "Not quite — it prints:\n" + current.expected; say(["Not quite. " + current.explain]); }
         return;
       }
       var pick = root.querySelector('input[name="' + c.id + '-mc"]:checked');
@@ -207,8 +209,8 @@
       var i = +pick.value, choices = root.querySelectorAll(".mc-choice");
       choices.forEach(function (el, k) { el.classList.remove("right", "wrong"); if (k === current.answer) el.classList.add("right"); });
       ex2.textContent = current.explain; ex2.hidden = false;
-      if (i === current.answer) { mcStatus.textContent = "Correct!"; save(current.id).then(renderMenu); say(["Correct. " + current.explain, "Next one when you're ready."]); }
-      else { choices[i].classList.add("wrong"); mcStatus.textContent = "Not quite."; say(["Not quite — the answer is highlighted. " + current.explain]); }
+      if (i === current.answer) { mcStatus.textContent = "Correct!"; unsting(); save(current.id).then(renderMenu); say(["Correct. " + current.explain, "Next one when you're ready."]); }
+      else { sting(); choices[i].classList.add("wrong"); mcStatus.textContent = "Not quite."; say(["Not quite — the answer is highlighted. " + current.explain]); }
     });
     $(".mc-solution").addEventListener("click", function () {
       if (!current) return;
@@ -228,16 +230,17 @@
         out.textContent = r.out;
         if (r.error) { var e = document.createElement("div"); e.className = "err"; e.textContent = r.error; out.appendChild(e); }
         if (!submit) { status.textContent = r.error ? "Error" : "Ran OK"; return; }
-        if (r.error) { status.textContent = "Fix the error first."; say(["There's an error in your jutsu. Read the message, fix it, and try again."]); return; }
+        if (r.error) { sting(); status.textContent = "Fix the error first."; say(["There's an error in your jutsu. Read the message, fix it, and try again."]); return; }
         r.ns.set("_out", r.out); r.ns.set("_src", code.value);
         var verdict = document.createElement("div");
         try {
           py.runPython(current.check, { globals: r.ns });
           verdict.className = "ok"; verdict.textContent = "✓ PASS"; status.textContent = "Passed!";
-          save(current.id).then(renderMenu);
+          unsting(); save(current.id).then(renderMenu);
           say([c.praise || "Excellent! That's exactly it.", "Choose another problem when you're ready."]);
         } catch (e) {
           var reason = failReason(e);
+          sting();
           verdict.className = "fail"; verdict.textContent = "✗ FAIL — " + reason; status.textContent = "Not yet.";
           say(["Not quite. " + reason]);
         }

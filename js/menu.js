@@ -185,6 +185,7 @@
   }
   function setArea(next) {
     if (next === area) return;
+    if (window.stopSting) window.stopSting();
     areaPos[area] = { track: track, t: audio.currentTime };
     var wasPlaying = !audio.paused;
     var level = userVolume();
@@ -247,16 +248,36 @@
   var savedLevel = 0.7;
   function applyVolume(v) {
     savedLevel = v; clearInterval(fadeTimer); fadeTimer = null;
-    audio.volume = v;
+    audio.volume = stinging ? 0 : v; sting.volume = audio.muted ? 0 : v;
     volSlider.value = Math.round(v * 100);
     if (v > 0) audio.muted = false;   // dragging the slider un-mutes
     updateMuteIcon();
     try { localStorage.setItem("volume", String(v)); } catch (e) {}
   }
   masterVolume = function () { return audio.muted ? 0 : savedLevel; };
+
+  /* "wrong answer" sting: Sadness and Sorrow plays over a ducked player, then the area music fades back */
+  var sting = new Audio("assets/music/sadness-and-sorrow.mp3");
+  sting.preload = "auto";
+  var stinging = false;
+  function restoreMusic() {
+    if (!stinging) return;
+    stinging = false;
+    sting.pause(); sting.currentTime = 0;
+    if (!audio.paused) fadeTo(userVolume(), FADE); else audio.volume = userVolume();
+  }
+  window.playSting = function () {
+    stinging = true;
+    sting.volume = masterVolume();
+    sting.currentTime = 0;
+    sting.play().catch(function () {});
+    if (!audio.paused) fadeTo(0, 300);
+  };
+  window.stopSting = restoreMusic;
+  sting.addEventListener("ended", restoreMusic);
   volSlider.addEventListener("input", function () { applyVolume(volSlider.value / 100); });
   muteBtn.addEventListener("click", function () {
-    audio.muted = !audio.muted;
+    audio.muted = !audio.muted; sting.volume = masterVolume();
     updateMuteIcon();
   });
   applyVolume(savedVol);

@@ -58,7 +58,7 @@ Both lesson screens are instances of `js/dojo.js`, configured in `js/dojos.js` (
 
 ## Music
 
-Playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through `village`, the Residence plays `residence`, the Academy plays `academy` and the Training Grounds play `training`. Each area remembers its own track and position and the music crossfades when you move between areas. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
+Playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through `village`, the Residence plays `residence`, the Academy plays `academy` and the Training Grounds play `training`. Each area remembers its own track and position and the music crossfades when you move between areas. Getting a question wrong in any dojo plays the Sadness and Sorrow clip over the ducked area music, which fades back when the clip ends or the next answer is right. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
 
 ## Publishing on Render (free tier)
 
