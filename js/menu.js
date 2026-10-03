@@ -149,8 +149,9 @@
       { title: "Fake",                  src: "assets/music/fake.mp3" }
     ],
     training: [
-      { title: "Hinata vs Neji",        src: "assets/music/hinata-vs-neji.mp3" },
-      { title: "Survival Examination",  src: "assets/music/survival-examination.mp3" }
+      { title: "Raikiri (Thunder Break)", src: "assets/music/raikiri.mp3" },
+      { title: "Avenger",                 src: "assets/music/avenger.mp3" },
+      { title: "Bad Situation",           src: "assets/music/bad-situation.mp3" }
     ]
   };
   var area = "village";

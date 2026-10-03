@@ -10,5 +10,5 @@ window.Training = window.Dojo({
   bg: "assets/images/locations/training.jpg", sprite: "assets/images/characters/lee.png",
   teacher: "Rock Lee", lessons: window.JUTSU, field: "training",
   praise: "YES! That is the power of hard work!",
-  welcome: function (name) { return [name + "! Welcome to Training Ground 3!", "Here we learn jutsu — the data structures every shinobi programmer needs. Hash maps, linked lists, stacks, queues, heaps, trees, graphs and dynamic programming.", "D-rank is learning the moves. By A-rank you'll be combining them. Let's go!"]; }
+  welcome: function (name) { return [name + "! Welcome to Training Ground 3!", "Here we learn jutsu — the data structures every shinobi programmer needs. Hash maps, linked lists, stacks, queues, heaps, trees, graphs and dynamic programming.", "D-rank is hand seals, C is shape transformation, B is nature transformation, and A is combat practice. Let's go!"]; }
 });

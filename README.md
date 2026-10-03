@@ -54,11 +54,11 @@ Both lesson screens are instances of `js/dojo.js`, configured in `js/dojos.js` (
 
 ## Academy (Python lessons)
 
-`js/lessons.js` holds the curriculum in four ranks: **D Ninja History** (multiple choice: predict a snippet's output), **C Weapon Handling** (one concept per problem, written from scratch), **B Chakra Control** (several concepts combined) and **A Tactics & Formation** (array problems that need a plan). Code problems have Iruka's dialogue, a task, an optional hint, a Python `check` and a `solution`; the check runs in the student's namespace with `_out` (printed text) and `_src` (source) available, and raising `AssertionError("…")` fails with that message. Multiple-choice problems have `code`, `question`, `choices`, `answer` and `explain`. Code runs in the browser via Pyodide (CDN, with `vendor/pyodide/` as fallback). Solved problems are saved on the Firestore profile under `academy`.
+`js/lessons.js` holds the curriculum in four ranks: **D Ninja History** (predict a snippet's output, then repair broken code), **C Weapon Handling** (one concept per problem, written from scratch), **B Chakra Control** (several concepts combined) and **A Tactics & Formation** (array problems that need a plan). Code problems have Iruka's dialogue, a task, an optional hint, a Python `check` and a `solution`; the check runs in the student's namespace with `_out` (printed text) and `_src` (source) available, and raising `AssertionError("…")` fails with that message. Multiple-choice problems have `code`, `question`, `choices`, `answer` and `explain`. Code runs in the browser via Pyodide (CDN, with `vendor/pyodide/` as fallback). Solved problems are saved on the Firestore profile under `academy`.
 
 ## Music
 
-Playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through `village`, the Residence plays `residence` and the Academy plays `academy`. Each area remembers its own track and position and the music crossfades when you move between areas. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
+Playlists live in `PLAYLISTS` in `js/menu.js`: the village menu rotates through `village`, the Residence plays `residence`, the Academy plays `academy` and the Training Grounds play `training`. Each area remembers its own track and position and the music crossfades when you move between areas. Tracks are in `assets/music/`. Browsers only start audio after the first click or key press on the page.
 
 ## Publishing on Render (free tier)
 
