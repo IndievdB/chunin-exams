@@ -561,3 +561,7 @@ body.modal .player, body.modal .player.mini { background: none; }
 .hk-mini { white-space: nowrap; }
 .hk-count { white-space: nowrap; }
 @media (max-width: 760px) { .hk-rankrow { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- Missions board (placeholder while the curriculum is written) ---------- */
+.ms-locked { cursor: default; opacity: .85; }
+.ms-locked .lesson-t small { display: block; font-size: 12px; color: #9fb3c8; letter-spacing: 0; margin-top: 2px; }

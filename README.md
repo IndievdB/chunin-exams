@@ -9,7 +9,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 | Residence | `#residence` — your shinobi's room: the Ninja Info Card (name, clan, rank), progress and rank-up tracker (`js/ranks.js`), and the character creator |
 | Academy | `#academy` — Iruka-sensei's Python fundamentals: lessons with auto-checked problems in an in-browser sandbox |
 | Training Grounds | `#training` — Rock Lee's data-structures dojo: hash maps, linked lists, stacks, queues, heaps, trees, graphs/grids, DP |
-| Missions | `#missions` |
+| Missions | `#missions` — Kakashi's briefing at the Valley of the End; will teach small real-world Python servers (FastAPI + SQLite). Admin-only while the curriculum is written |
 | Ninja Exams | `#exams` |
 | Hokage Tower | `#hokage` — the Third Hokage's office: every shinobi's Ninja Info Card and progress. The admin account (email in `js/account.js`, enforced by `firestore.rules`) gets an **Admin** toggle to grant or remove progress per rank or per problem and to pin a rank |
 
