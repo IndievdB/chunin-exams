@@ -14,4 +14,4 @@ window.FIREBASE_CONFIG = {
 // Ask Sensei server (server/sensei.js). Set this to the URL of the deployed "hidden-leaf-sensei"
 // web service on Render, e.g. "https://hidden-leaf-sensei.onrender.com". Leave null to disable;
 // on localhost the site falls back to http://localhost:8787.
-window.SENSEI_URL = null;
+window.SENSEI_URL = "https://hidden-leaf-sensei.onrender.com";
