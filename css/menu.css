@@ -565,3 +565,14 @@ body.modal .player, body.modal .player.mini { background: none; }
 /* ---------- Missions board (placeholder while the curriculum is written) ---------- */
 .ms-locked { cursor: default; opacity: .85; }
 .ms-locked .lesson-t small { display: block; font-size: 12px; color: #9fb3c8; letter-spacing: 0; margin-top: 2px; }
+
+/* ---------- missions: request log + guides ---------- */
+.req { white-space: pre-wrap; padding: 6px 8px; border-left: 3px solid #3b5a7a; margin-bottom: 6px; background: rgba(255,255,255,.04); border-radius: 0 4px 4px 0; }
+.req-ok { border-left-color: #7bd88f; }
+.req-bad { border-left-color: #ff8a80; }
+.req-print { white-space: pre-wrap; color: #9fb3c8; margin: 6px 0; }
+.sb-guide[hidden] { display: none; }
+.guide-step { margin: 0 0 14px; padding-left: 14px; border-left: 3px solid var(--gold); }
+.guide-step p { margin: 0 0 8px; color: #cfe3f5; font-size: 15px; line-height: 1.5; }
+.guide-step p code { color: #ffe9a8; }
+.guide-step pre { margin: 0 0 8px; max-height: none; }

@@ -12,10 +12,11 @@
   ];
   var AREAS = [
     { id: "academy",  title: "Academy",          kanji: "学", lessons: function () { return window.LESSONS || []; } },
-    { id: "training", title: "Training Grounds", kanji: "修", lessons: function () { return window.JUTSU || []; } }
+    { id: "training", title: "Training Grounds", kanji: "修", lessons: function () { return window.JUTSU || []; } },
+    // admin-only while the curriculum is being written: counts toward rank only for those who can see it
+    { id: "missions", title: "Missions",         kanji: "任", lessons: function () { return window.MISSIONS || []; }, gate: function () { return window.Shinobi && window.Shinobi.isAdmin(); } }
   ];
   var LOCKED = [
-    { title: "Missions",     kanji: "任" },
     { title: "Ninja Exams",  kanji: "試" }
   ];
 
@@ -24,7 +25,7 @@
   function progress(profile) {
     profile = profile || {};
     var total = 0, solved = 0;
-    var areas = AREAS.map(function (a) {
+    var areas = AREAS.filter(function (a) { return !a.gate || a.gate(); }).map(function (a) {
       var done = profile[a.id] || {};
       var ranks = a.lessons().map(function (r) {
         var ps = problemsOf(r), n = ps.filter(function (p) { return done[p.id]; }).length;

@@ -68,6 +68,10 @@ The chat goes through a small server that holds the Anthropic API key, `server/s
 
 Teacher voices and the shared tutoring rules live in `server/teachers.js`.
 
+## Missions (real Python servers)
+
+`js/missions.js` teaches small, production-shaped servers with **FastAPI**, **Pydantic** and **SQLite**: D-rank routes and request bodies, C-rank the database and create/read/update/delete, B-rank a full CRUD service from a blank file, A-rank running it on your own machine with uvicorn. Server missions are checked inside the browser: the student's `app` is driven through ASGI directly (no network), every request and response is shown in the panel, and the checker's `expect()` calls explain what was wanted. FastAPI and its pure-Python dependencies are vendored in `vendor/wheels/`; pydantic, sqlite and ssl come from the Pyodide distribution (also vendored under `vendor/pyodide/`). About 11 MB loads the first time a mission opens. Missions are visible to the admin account only for now (`menu.js` gates it; `js/ranks.js` counts them toward rank only for whoever can see them).
+
 ## Academy (Python lessons)
 
 `js/lessons.js` holds the curriculum in four ranks: **D Ninja History** (predict a snippet's output, then repair broken code), **C Weapon Handling** (one concept per problem, written from scratch), **B Chakra Control** (several concepts combined) and **A Tactics & Formation** (array problems that need a plan). Code problems have Iruka's dialogue, a task, an optional hint, a Python `check` and a `solution`; the check runs in the student's namespace with `_out` (printed text) and `_src` (source) available, and raising `AssertionError("…")` fails with that message. Multiple-choice problems have `code`, `question`, `choices`, `answer` and `explain`. Code runs in the browser via Pyodide (CDN, with `vendor/pyodide/` as fallback). Solved problems are saved on the Firestore profile under `academy`.

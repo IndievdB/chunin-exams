@@ -32,20 +32,25 @@
   // Runs prelude (hidden helpers) then the student's code in a fresh namespace.
   function execute(prelude, src) {
     var ns = py.globals.get("dict")();
-    py.runPython("import sys, io\nsys.stdout = io.StringIO()\nsys.stderr = sys.stdout");
-    var error = null;
+    py.runPython("import sys, io\nsys.stdout = io.StringIO()\nsys.stderr = io.StringIO()");
+    var threw = null;
     try {
       if (prelude) py.runPython(prelude, { globals: ns });
       py.runPython(src, { globals: ns });
-    } catch (e) {
-      var lines = String(e.message || e).split("\n"), keep = [], inUser = false;
-      lines.forEach(function (l) { if (/File "<exec>"/.test(l)) inUser = true; if (inUser && l.trim() && l.trim() !== "PythonError") keep.push(l.replace(/File "<exec>", /, "")); });
-      error = keep.length ? keep.join("\n") : lines.filter(function (l) { return l.trim(); }).slice(-2, -1)[0];
-    }
-    var text = py.runPython("sys.stdout.getvalue()");
+    } catch (e) { threw = e; }
+    var text = py.runPython("sys.stdout.getvalue()"), errText = py.runPython("sys.stderr.getvalue()");
     py.runPython("sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__");
-    return { out: text, error: error, ns: ns };
+    // with stderr captured, Pyodide puts the traceback there and leaves the error's message empty
+    return { out: text, error: threw ? trimTrace(errText || String(threw.message || threw)) : null, ns: ns };
   }
+  function trimTrace(text) {
+    var lines = String(text || "").split("\n"), keep = [], inUser = false;
+    lines.forEach(function (l) { if (/File "<exec>"/.test(l)) inUser = true; if (inUser && l.trim() && l.trim() !== "PythonError") keep.push(l.replace(/File "<exec>", /, "")); });
+    if (keep.length) return keep.join("\n");
+    var nonblank = lines.filter(function (l) { return l.trim(); });
+    return nonblank.length ? nonblank[nonblank.length - 1] : "Something went wrong while running your code.";
+  }
+  function userError(e) { return trimTrace(String(e.message || e)); }
   function failReason(e) {
     var msg = String(e.message || e); var m = msg.match(/AssertionError: (.*)$/m);
     var nm = msg.match(/NameError: name '([^']+)' is not defined/), at = msg.match(/AttributeError: (.*)$/m);
@@ -67,7 +72,7 @@
         '<div class="sb-output"><div class="sb-label">Output</div><pre class="sb-out"></pre></div></div><div class="sb-solbox" hidden><div class="sb-label">One way to solve it <small>— your code is untouched; read it, then write it yourself</small></div><pre class="sb-sol"><code></code></pre></div>' +
       '<div class="creator-actions sb-actions"><button class="btn-ghost sb-run" type="button">▶ Run</button><button class="go sb-submit" type="button"><i aria-hidden="true">火</i>Submit</button>' +
         '<button class="btn-ghost sb-hint" type="button" hidden>Hint</button><button class="btn-ghost sb-solution" type="button">Show solution</button><button class="btn-ghost ask-sensei" type="button">Ask a sensei</button><button class="btn-ghost sb-reset" type="button">Clear</button><span class="res-saved sb-status" aria-live="polite"></span></div>' +
-      '<p class="sb-hinttext" hidden></p><div class="sensei-root"></div></article></div>'; };
+      '<p class="sb-hinttext" hidden></p><div class="sb-guide" hidden><div class="guide-steps"></div><div class="creator-actions"><button class="go guide-done" type="button"><i aria-hidden="true">火</i>Mark as done</button><button class="btn-ghost ask-sensei" type="button">Ask a sensei</button><span class="res-saved guide-status" aria-live="polite"></span></div></div><div class="sensei-root"></div></article></div>'; };
 
   window.Dojo = function (c) {
     var S = window.Shinobi, L = c.lessons;
@@ -78,6 +83,15 @@
     var hintBtn = $(".sb-hint"), hintText = $(".sb-hinttext"), mc = $(".mc"), sbGrid = $(".sb-grid"), mcStatus = $(".mc-status");
     var current = null, openRank = null, openTopic = null;
     var ed = window.CodeEditor(code);
+    var prepared = null;
+    function readyPy(st) {
+      return loadPy(st).then(function (p) {
+        if (!c.prepare) return p;
+        if (!prepared) { st.textContent = c.prepareLabel || "Preparing…"; prepared = c.prepare(p, st).then(function () { return p; }, function (e) { prepared = null; throw e; }); }
+        return prepared;
+      });
+    }
+    var guide = $(".sb-guide"), guideSteps = $(".guide-steps"), guideStatus = $(".guide-status");
     var solbox = $(".sb-solbox"), solBtn = $(".sb-solution");
 
     /* ---------- drafts: what you typed is kept per problem, in this browser and on your profile ---------- */
@@ -178,8 +192,9 @@
     function openProblem(rank, topic, p) {
       current = p;
       $(".sb-title").textContent = RANK_NAMES[rank.rank] + " · " + p.title;
-      var isMC = p.type === "mc" || p.type === "output";
-      mc.hidden = !isMC; sbGrid.hidden = isMC; $(".sb-actions").hidden = isMC;
+      var isMC = p.type === "mc" || p.type === "output", isGuide = p.type === "guide";
+      mc.hidden = !isMC; sbGrid.hidden = isMC || isGuide; $(".sb-actions").hidden = isMC || isGuide; guide.hidden = !isGuide;
+      $(".sb-output .sb-label").textContent = p.type === "server" ? "Requests sent to your server" : "Output";
       hintText.hidden = true; hintText.textContent = "";
       var ex = $(".sb-examples"); ex.innerHTML = ""; ex.hidden = true;
       var prov = $(".sb-provided"); prov.hidden = !p.prelude; if (p.prelude) prov.querySelector("code").innerHTML = window.CodeEditor.highlight(p.prelude.trim());
@@ -204,16 +219,29 @@
         wrap.hidden = false; say(["What does this print? Work it out line by line before you answer."]); return;
       }
       $(".sb-task").innerHTML = esc(p.task).replace(/`([^`]+)`/g, "<code>$1</code>");
+      if (isGuide) {
+        guideSteps.innerHTML = p.steps.map(function (st) {
+          return "<div class='guide-step'>" + st.split(/```(?:python|bash|sh|text)?\n?([\s\S]*?)```/g).map(function (part, i) {
+            return i % 2 ? "<pre class='sb-sol'><code>" + window.CodeEditor.highlight(part.replace(/\n$/, "")) + "</code></pre>" : "<p>" + esc(part).replace(/`([^`]+)`/g, "<code>$1</code>") + "</p>";
+          }).join("") + "</div>";
+        }).join("");
+        guideStatus.textContent = done(p.id) ? "Done." : "";
+        wrap.hidden = false; say([p.say]); return;
+      }
       ex.hidden = !(p.examples && p.examples.length);
       (p.examples || []).forEach(function (e) { var pre = document.createElement("pre"); pre.textContent = e; ex.appendChild(pre); });
       var draft = loadDraft(p);
       ed.value = draft !== null ? draft : (p.starter || ""); out.textContent = ""; status.textContent = draft !== null && draft !== (p.starter || "") ? "Your earlier work was restored." : "";
       hintBtn.hidden = !p.hint;
       wrap.hidden = false; say([p.say]);
-      loadPy(status).then(function () { if (status.textContent === "Loading Python…") status.textContent = ""; }, function () { status.textContent = "Couldn't load the Python runtime."; });
+      readyPy(status).then(function () { if (/^(Loading Python|Preparing)/.test(status.textContent) || status.textContent === c.prepareLabel) status.textContent = ""; }, function () { status.textContent = "Couldn't load the Python runtime."; });
       ed.focus();
     }
     function closeSandbox() { storeDraft(true); wrap.hidden = true; }
+    $(".guide-done").addEventListener("click", function () {
+      if (!current) return; sfx("sfx-tap", 0.8); guideStatus.textContent = "Saving…";
+      save(current.id).then(function () { guideStatus.textContent = "Done."; renderMenu(); say([c.praise || "Well done.", "Choose another when you're ready."]); }, function (e) { guideStatus.textContent = S.describe(e); });
+    });
     $(".panel-x").addEventListener("click", closeSandbox);
     wrap.addEventListener("click", function (e) { if (e.target === wrap) closeSandbox(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !wrap.hidden) { e.stopPropagation(); closeSandbox(); } }, true);
@@ -261,13 +289,60 @@
     });
 
     /* ---------- run / submit ---------- */
+    function renderLog(log, printed, error) {
+      out.innerHTML = "";
+      log.forEach(function (r) {
+        var d = document.createElement("div"); d.className = "req " + (r.ok ? "req-ok" : "req-bad");
+        var body = r.body === undefined || r.body === null ? "" : "  " + JSON.stringify(r.body);
+        var resp = r.response === undefined ? "" : (typeof r.response === "string" ? r.response : JSON.stringify(r.response));
+        if (resp.length > 300) resp = resp.slice(0, 300) + "…";
+        d.textContent = "▶ " + r.method + " " + r.path + body + "\n  ← " + (r.status === null ? "no response" : r.status) + " " + resp + (r.note ? "\n  " + (r.ok ? "✓ " : "✗ ") + r.note : "");
+        out.appendChild(d);
+      });
+      if (printed) { var pr = document.createElement("div"); pr.className = "req-print"; pr.textContent = printed; out.appendChild(pr); }
+      if (error) { var e = document.createElement("div"); e.className = "err"; e.textContent = error; out.appendChild(e); }
+    }
+    function runServer(submit) {
+      status.textContent = "Starting your server…"; out.textContent = "";
+      readyPy(status).then(function () {
+        var ns = py.globals.get("dict")();
+        py.runPython("import sys, io\nsys.stdout = io.StringIO()\nsys.stderr = io.StringIO()");
+        var threw = null;
+        try {
+          py.runPython(c.harness || "", { globals: ns });
+          if (current.prelude) py.runPython(current.prelude, { globals: ns });
+          py.runPython(code.value, { globals: ns });
+        } catch (e) { threw = e; }
+        var stderrSoFar = py.runPython("sys.stderr.getvalue()");
+        var error = threw ? trimTrace(stderrSoFar || String(threw.message || threw)) : null;
+        py.runPython("sys.stderr = io.StringIO()");
+        function finish(checkFailed) {
+          var printed = py.runPython("sys.stdout.getvalue()"), errText = py.runPython("sys.stderr.getvalue()");
+          py.runPython("sys.stdout = sys.__stdout__\nsys.stderr = sys.__stderr__");
+          var log = [];
+          try { log = JSON.parse(py.runPython("__import__('json').dumps(_log)", { globals: ns })); } catch (e) {}
+          var checkErr = checkFailed ? { message: errText || String(checkFailed.message || checkFailed) } : null;
+          var crash = checkErr && !/AssertionError/.test(checkErr.message) ? trimTrace(checkErr.message) : null;
+          renderLog(log, printed, error || crash);
+          var verdict = document.createElement("div");
+          if (error) { sting(); verdict.className = "fail"; verdict.textContent = "✗ Your server didn't start — fix the error above."; status.textContent = "Error"; say(["Your server crashed before it could answer. Read the error, fix it, and run again."]); }
+          else if (checkErr) { var reason = failReason(checkErr); sting(); verdict.className = "fail"; verdict.textContent = "✗ FAIL — " + reason; status.textContent = "Not yet."; say(["Not quite. " + reason]); }
+          else if (submit) { verdict.className = "ok"; verdict.textContent = "✓ MISSION COMPLETE"; status.textContent = "Passed!"; unsting(); save(current.id).then(renderMenu); say([c.praise || "Mission complete.", "Choose another when you're ready."]); }
+          else { verdict.className = "ok"; verdict.textContent = "✓ Every request answered as expected. Submit to complete the mission."; status.textContent = "Ran OK"; }
+          out.appendChild(verdict);
+        }
+        if (error) { finish(null); return; }
+        py.runPythonAsync(current.check, { globals: ns }).then(function () { finish(null); }, function (e) { finish(e); });
+      }, function () { status.textContent = "Couldn't prepare the Python runtime."; });
+    }
     function run(submit) {
-      if (!current || current.type === "mc" || current.type === "output") return;
+      if (!current || current.type === "mc" || current.type === "output" || current.type === "guide") return;
       sfx("sfx-tap", 0.8);
+      if (current.type === "server") { if (!code.value.trim()) { status.textContent = "Write your server first."; return; } runServer(submit); return; }
       if (!code.value.trim()) { status.textContent = "Write some code first."; return; }
       status.textContent = "Running…"; out.textContent = "";
-      loadPy(status).then(function () {
-        var r = execute(current.prelude, code.value);
+      readyPy(status).then(function () {
+        var r = execute((c.harness ? c.harness + "\n" : "") + (current.prelude || ""), code.value);
         out.textContent = r.out;
         if (r.error) { var e = document.createElement("div"); e.className = "err"; e.textContent = r.error; out.appendChild(e); }
         if (!submit) { status.textContent = r.error ? "Error" : "Ran OK"; return; }

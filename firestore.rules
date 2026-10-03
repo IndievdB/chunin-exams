@@ -8,6 +8,7 @@ service cloud.firestore {
         && (!("avatar" in request.resource.data) || request.resource.data.avatar is map)
         && (!("academy" in request.resource.data) || request.resource.data.academy is map)
         && (!("training" in request.resource.data) || request.resource.data.training is map)
+        && (!("missions" in request.resource.data) || request.resource.data.missions is map)
         && (!("drafts" in request.resource.data) || request.resource.data.drafts is map)
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 24
@@ -15,9 +16,10 @@ service cloud.firestore {
         && (!("email" in request.resource.data) || request.resource.data.email == null || request.resource.data.email == request.auth.token.email);
       // The Hokage (admin) may grant or remove progress and pin a rank on any record, nothing else.
       allow update: if request.auth != null && request.auth.token.email == "indievdb@gmail.com"
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["academy", "training", "rankOverride", "updatedAt"])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["academy", "training", "missions", "rankOverride", "updatedAt"])
         && (!("academy" in request.resource.data) || request.resource.data.academy is map)
         && (!("training" in request.resource.data) || request.resource.data.training is map)
+        && (!("missions" in request.resource.data) || request.resource.data.missions is map)
         && (!("rankOverride" in request.resource.data) || request.resource.data.rankOverride in ["Student", "Genin", "Chunin", "Jonin", "Kage"]);
       allow delete: if false;
       // Ask-sensei chat logs, one document per problem
