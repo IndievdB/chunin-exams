@@ -110,7 +110,7 @@
       S.idToken().then(function (tok) {
         return fetch(url(), { method: "POST", headers: { "content-type": "application/json" }, signal: ctrl ? ctrl.signal : undefined,
           body: JSON.stringify({ idToken: tok, teacher: teacher, problem: ctx.problem, code: ctx.code, output: ctx.output,
-            messages: messages.slice(-24).map(function (m) { return { role: m.role, content: m.content, code: m.code, output: m.output }; }) }) });
+            messages: messages.slice(-24).map(function (m) { return { role: m.role, content: m.content, code: m.code, output: m.output, teacher: m.teacher }; }) }) });
       }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || ("HTTP " + r.status)); return j; }); })
         .then(function (j) { messages.push({ role: "assistant", teacher: teacher, content: j.reply, t: Date.now() }); persist(); })
         .catch(function (err) {

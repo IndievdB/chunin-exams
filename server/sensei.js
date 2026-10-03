@@ -52,6 +52,10 @@ function buildSystem(teacher, problem) {
     p.prelude ? "Code provided to the student (already defined, they must not rewrite it):\n```python\n" + clip(p.prelude, 3000) + "\n```" : "",
     p.hint ? "Official hint: " + clip(p.hint, 600) : "",
     "Reference solution (for your eyes; follow the rules above about revealing it):\n```python\n" + clip(p.solution, 4000) + "\n```",
+    "## Other senseis",
+    "The student can switch between senseis mid-chat. Replies from the others appear quoted inside the student's messages, " +
+    "labelled with who said them; they are colleagues of yours, not you. Pick up where they left off, refer to them by name if it " +
+    "helps, and never claim you were them, that they were you, or that anyone 'slipped out of character'. You are " + t.name + ".",
     "## How the student's code reaches you",
     "Each of the student's messages ends with a snapshot of their editor and their last run output AT THE MOMENT THEY ASKED. " +
     "The code changes between messages as they edit, so the latest snapshot is the only current one; earlier snapshots are history. " +
@@ -79,9 +83,15 @@ http.createServer(async (req, res) => {
     const raw_history = (Array.isArray(body.messages) ? body.messages : [])
       .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .slice(-24);
+    const current = TEACHERS[body.teacher] ? body.teacher : "kakashi";
     const history = raw_history.map((m, i) => {
       const last = i === raw_history.length - 1;
       let content = clip(m.content, 4000);
+      // a reply from a different sensei becomes quoted context in the student's turn,
+      // so the current sensei never mistakes it for their own words
+      if (m.role === "assistant" && m.teacher && m.teacher !== current && TEACHERS[m.teacher]) {
+        return { role: "user", content: "[Earlier in this chat, " + TEACHERS[m.teacher].name + " (another sensei) answered:]\n" + content };
+      }
       if (m.role === "user") {
         // older snapshots are trimmed harder: the latest one is what matters
         const code = typeof m.code === "string" ? m.code : (last ? body.code : null);
