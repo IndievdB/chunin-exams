@@ -100,17 +100,17 @@
       e.preventDefault();
       var q = input.value.trim(); if (!q || busy) return;
       if (!url()) { note.textContent = "The sensei line isn't set up yet (SENSEI_URL in js/firebase-config.js)."; return; }
-      messages.push({ role: "user", content: q, t: Date.now() }); input.value = ""; renderLog(); persist();
+      var ctx = opts.context();
+      messages.push({ role: "user", content: q, code: ctx.code || "", output: ctx.output || "", t: Date.now() }); input.value = ""; renderLog(); persist();
       var typing = document.createElement("div"); typing.className = "chat them typing"; typing.innerHTML = "<div class='chat-who'>" + esc(nameOf(teacher)) + "</div><div class='chat-body'>…</div>"; log.appendChild(typing); log.scrollTop = log.scrollHeight;
       setBusy(true); note.textContent = "";
       var slow = setTimeout(function () { typing.querySelector(".chat-body").textContent = "The sensei is on the way from the other side of the village… the first answer after a quiet spell can take up to a minute."; log.scrollTop = log.scrollHeight; }, SLOW_AFTER);
       var ctrl = typeof AbortController === "function" ? new AbortController() : null;
       var killer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT);
-      var ctx = opts.context();
       S.idToken().then(function (tok) {
         return fetch(url(), { method: "POST", headers: { "content-type": "application/json" }, signal: ctrl ? ctrl.signal : undefined,
           body: JSON.stringify({ idToken: tok, teacher: teacher, problem: ctx.problem, code: ctx.code, output: ctx.output,
-            messages: messages.slice(-24).map(function (m) { return { role: m.role, content: m.content }; }) }) });
+            messages: messages.slice(-24).map(function (m) { return { role: m.role, content: m.content, code: m.code, output: m.output }; }) }) });
       }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || ("HTTP " + r.status)); return j; }); })
         .then(function (j) { messages.push({ role: "assistant", teacher: teacher, content: j.reply, t: Date.now() }); persist(); })
         .catch(function (err) {

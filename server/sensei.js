@@ -39,7 +39,7 @@ async function verify(idToken) {
 
 function clip(s, n) { s = String(s == null ? "" : s); return s.length > n ? s.slice(0, n) + "\n…(truncated)" : s; }
 
-function buildSystem(teacher, problem, code, output) {
+function buildSystem(teacher, problem) {
   const t = TEACHERS[teacher] || TEACHERS.kakashi;
   const p = problem || {};
   return [
@@ -52,8 +52,10 @@ function buildSystem(teacher, problem, code, output) {
     p.prelude ? "Code provided to the student (already defined, they must not rewrite it):\n```python\n" + clip(p.prelude, 3000) + "\n```" : "",
     p.hint ? "Official hint: " + clip(p.hint, 600) : "",
     "Reference solution (for your eyes; follow the rules above about revealing it):\n```python\n" + clip(p.solution, 4000) + "\n```",
-    "## The student's current code\n```python\n" + (clip(code, 6000) || "(empty)") + "\n```",
-    output ? "## What their last run printed (including any error or verdict)\n```\n" + clip(output, 3000) + "\n```" : ""
+    "## How the student's code reaches you",
+    "Each of the student's messages ends with a snapshot of their editor and their last run output AT THE MOMENT THEY ASKED. " +
+    "The code changes between messages as they edit, so the latest snapshot is the only current one; earlier snapshots are history. " +
+    "Never tell the student their code didn't change or that a line wasn't theirs — compare the snapshots and talk about the latest."
   ].filter(Boolean).join("\n\n");
 }
 
@@ -74,10 +76,21 @@ http.createServer(async (req, res) => {
     const uid = await verify(body.idToken).catch(() => null);
     if (!uid) return send(res, 401, { error: "Sign in to talk to a sensei." });
     if (limited(uid)) return send(res, 429, { error: "Even a sensei needs a break. Try again in a few minutes." });
-    const history = (Array.isArray(body.messages) ? body.messages : [])
+    const raw_history = (Array.isArray(body.messages) ? body.messages : [])
       .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
-      .slice(-24)
-      .map((m) => ({ role: m.role, content: clip(m.content, 4000) }));
+      .slice(-24);
+    const history = raw_history.map((m, i) => {
+      const last = i === raw_history.length - 1;
+      let content = clip(m.content, 4000);
+      if (m.role === "user") {
+        // older snapshots are trimmed harder: the latest one is what matters
+        const code = typeof m.code === "string" ? m.code : (last ? body.code : null);
+        const out = typeof m.output === "string" ? m.output : (last ? body.output : null);
+        if (code !== null) content += "\n\n[My code " + (last ? "right now" : "at the time") + ":]\n```python\n" + (clip(code, last ? 6000 : 2500) || "(empty)") + "\n```";
+        if (out) content += "\n[Last run output:]\n```\n" + clip(out, last ? 3000 : 800) + "\n```";
+      }
+      return { role: m.role, content };
+    });
     if (!history.length || history[history.length - 1].role !== "user") return send(res, 400, { error: "Ask something first." });
     // the API needs alternating turns; merge any accidental doubles
     const messages = [];
@@ -93,7 +106,7 @@ http.createServer(async (req, res) => {
         betas: ["server-side-fallback-2026-07-01"],
         fallbacks: "default",
         output_config: { effort: "medium" },
-        system: buildSystem(body.teacher, body.problem, body.code, body.output),
+        system: buildSystem(body.teacher, body.problem),
         messages
       });
       if (response.stop_reason === "refusal") return send(res, 200, { reply: "…Let's keep this to the training. Ask me about the problem." });

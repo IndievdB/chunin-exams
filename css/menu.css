@@ -208,7 +208,7 @@ body.modal .player, body.modal .player.mini { background: none; }
 .hotspot:focus-visible { outline: none; }
 .room-me { position: absolute; left: 50%; top: 58%; width: 150px; transform: translate(-50%, -50%); filter: drop-shadow(0 10px 8px rgba(0,0,0,.5)); pointer-events: none; }
 .room-me svg { width: 100%; }
-.panel-wrap { position: fixed; inset: 0; z-index: 12; display: grid; place-items: center; padding: 20px; background: rgba(5,20,35,.55); backdrop-filter: blur(2px); overflow: auto; }
+.panel-wrap { position: fixed; inset: 0; z-index: 12; display: grid; place-items: center; padding: 20px 20px 120px; background: rgba(5,20,35,.55); backdrop-filter: blur(2px); overflow: auto; }
 .panel-wrap[hidden] { display: none; }
 .panel { position: relative; width: min(900px, 100%); animation: ucCard .35s cubic-bezier(.2,1.4,.3,1); }
 .panel[hidden] { display: none; }
