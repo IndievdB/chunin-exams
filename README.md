@@ -62,7 +62,7 @@ Every problem has an **Ask a sensei** button: a chat where Kakashi, Jiraiya, Ita
 
 The chat goes through a small server that holds the Anthropic API key, `server/sensei.js`:
 
-1. `render.yaml` describes it as the `hidden-leaf-sensei` Node web service (free plan; the first message after a quiet spell can take a few seconds while it wakes up). In Render set its environment variables: `ANTHROPIC_API_KEY`, `FIREBASE_WEB_API_KEY` (the `apiKey` from `js/firebase-config.js`, used to check that the caller is signed in), and `ALLOWED_ORIGIN` (the static site's URL).
+1. `render.yaml` describes it as the `hidden-leaf-sensei` Node web service (free plan, so it sleeps when idle: the site pings it as soon as a dojo opens, and if an answer takes more than a few seconds the chat says the sensei is on the way; after ninety seconds it gives up and keeps the question in the box to resend). In Render set its environment variables: `ANTHROPIC_API_KEY`, `FIREBASE_WEB_API_KEY` (the `apiKey` from `js/firebase-config.js`, used to check that the caller is signed in), and `ALLOWED_ORIGIN` (the static site's URL).
 2. Put the service URL in `window.SENSEI_URL` in `js/firebase-config.js`.
 3. Locally: `cd server && npm install && ANTHROPIC_API_KEY=… node sensei.js` and the site on localhost will use it automatically (no sign-in check when `FIREBASE_WEB_API_KEY` is unset).
 

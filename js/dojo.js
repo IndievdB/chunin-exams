@@ -295,6 +295,7 @@
     return {
       open: function () {
         root.hidden = false; openRank = null; openTopic = null; renderMenu(); closeSandbox();
+        sensei.warm();
         say(c.welcome(S.profile && S.profile.name ? S.profile.name : "shinobi"));
       },
       close: function () { closeSandbox(); root.hidden = true; }

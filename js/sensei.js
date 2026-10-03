@@ -19,6 +19,14 @@
     if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return "http://localhost:8787/sensei";
     return null;
   }
+  // Wake a sleeping (free-tier) server as soon as a dojo opens, so it's up by the first question.
+  var warmed = 0;
+  function warm() {
+    var u = url(); if (!u || Date.now() - warmed < 5 * 60 * 1000) return;
+    warmed = Date.now();
+    fetch(u.replace(/\/sensei$/, "/"), { method: "GET", mode: "cors" }).catch(function () {});
+  }
+  var SLOW_AFTER = 4000, TIMEOUT = window.SENSEI_TIMEOUT || 90000;
   function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   // Tiny Markdown: fenced code (highlighted), inline code, bold, italics, paragraphs and lists.
   function md(text) {
@@ -95,20 +103,29 @@
       messages.push({ role: "user", content: q, t: Date.now() }); input.value = ""; renderLog(); persist();
       var typing = document.createElement("div"); typing.className = "chat them typing"; typing.innerHTML = "<div class='chat-who'>" + esc(nameOf(teacher)) + "</div><div class='chat-body'>…</div>"; log.appendChild(typing); log.scrollTop = log.scrollHeight;
       setBusy(true); note.textContent = "";
+      var slow = setTimeout(function () { typing.querySelector(".chat-body").textContent = "The sensei is on the way from the other side of the village… the first answer after a quiet spell can take up to a minute."; log.scrollTop = log.scrollHeight; }, SLOW_AFTER);
+      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+      var killer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT);
       var ctx = opts.context();
       S.idToken().then(function (tok) {
-        return fetch(url(), { method: "POST", headers: { "content-type": "application/json" },
+        return fetch(url(), { method: "POST", headers: { "content-type": "application/json" }, signal: ctrl ? ctrl.signal : undefined,
           body: JSON.stringify({ idToken: tok, teacher: teacher, problem: ctx.problem, code: ctx.code, output: ctx.output,
             messages: messages.slice(-24).map(function (m) { return { role: m.role, content: m.content }; }) }) });
       }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || ("HTTP " + r.status)); return j; }); })
         .then(function (j) { messages.push({ role: "assistant", teacher: teacher, content: j.reply, t: Date.now() }); persist(); })
-        .catch(function (err) { note.textContent = err.message === "Failed to fetch" ? "Couldn't reach the sensei. Is the server running?" : err.message; })
-        .then(function () { setBusy(false); renderLog(); input.focus(); });
+        .catch(function (err) {
+          // keep the question so one click resends it
+          messages.pop(); persist(); input.value = q;
+          note.textContent = err.name === "AbortError" ? "No answer after a minute and a half. The sensei may still be waking up — press Ask again."
+            : err.message === "Failed to fetch" ? "Couldn't reach the sensei. If the server was asleep it may be up now — press Ask again." : err.message;
+        })
+        .then(function () { clearTimeout(slow); clearTimeout(killer); setBusy(false); renderLog(); input.focus(); });
     });
     input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
 
     renderPick(); renderLog();
     return {
+      warm: warm,
       open: function () { container.hidden = false; input.focus(); container.scrollIntoView({ block: "nearest", behavior: "smooth" }); },
       close: function () { container.hidden = true; },
       toggle: function () { container.hidden ? this.open() : this.close(); },
