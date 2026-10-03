@@ -117,7 +117,7 @@
           // keep the question so one click resends it
           messages.pop(); persist(); input.value = q;
           note.textContent = err.name === "AbortError" ? "No answer after a minute and a half. The sensei may still be waking up — press Ask again."
-            : err.message === "Failed to fetch" ? "Couldn't reach the sensei. If the server was asleep it may be up now — press Ask again." : err.message;
+            : err instanceof TypeError ? "The browser couldn't complete the request. If the server was asleep, press Ask again; if it keeps happening, the service's ALLOWED_ORIGIN must be exactly " + location.origin + "." : err.message;
         })
         .then(function () { clearTimeout(slow); clearTimeout(killer); setBusy(false); renderLog(); input.focus(); });
     });
