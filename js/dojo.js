@@ -60,14 +60,14 @@
     '<div class="vn"><div class="vn-name">' + c.teacher + '</div><p class="vn-text"></p><button class="vn-next" type="button" aria-label="Continue">▼</button></div>' +
     '<div class="panel-wrap acad-wrap" hidden><article class="res-card panel sandbox">' +
       '<button class="panel-x" type="button" aria-label="Close">✕</button>' +
-      '<h3 class="sb-title">Problem</h3><p class="sb-task"></p><div class="sb-examples" hidden></div><div class="sb-provided" hidden><div class="sb-label">Provided for you (already defined)</div><pre></pre></div>' +
+      '<h3 class="sb-title">Problem</h3><p class="sb-task"></p><div class="sb-examples" hidden></div><div class="sb-provided" hidden><div class="sb-label">Provided for you (already defined)</div><pre><code></code></pre></div>' +
       '<div class="mc" hidden><pre class="mc-code"></pre><p class="mc-q"></p><div class="mc-choices"></div><p class="mc-explain" hidden></p>' +
-        '<div class="creator-actions"><button class="go mc-submit" type="button"><i aria-hidden="true">火</i>Submit</button><button class="btn-ghost mc-solution" type="button">Show solution</button><span class="res-saved mc-status" aria-live="polite"></span></div></div>' +
+        '<div class="creator-actions"><button class="go mc-submit" type="button"><i aria-hidden="true">火</i>Submit</button><button class="btn-ghost mc-solution" type="button">Show solution</button><button class="btn-ghost ask-sensei" type="button">Ask a sensei</button><span class="res-saved mc-status" aria-live="polite"></span></div></div>' +
       '<div class="sb-grid"><div class="sb-editor"><div class="sb-label">main.py</div><textarea class="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></div>' +
-        '<div class="sb-output"><div class="sb-label">Output</div><pre class="sb-out"></pre></div></div>' +
+        '<div class="sb-output"><div class="sb-label">Output</div><pre class="sb-out"></pre></div></div><div class="sb-solbox" hidden><div class="sb-label">One way to solve it <small>— your code is untouched; read it, then write it yourself</small></div><pre class="sb-sol"><code></code></pre></div>' +
       '<div class="creator-actions sb-actions"><button class="btn-ghost sb-run" type="button">▶ Run</button><button class="go sb-submit" type="button"><i aria-hidden="true">火</i>Submit</button>' +
-        '<button class="btn-ghost sb-hint" type="button" hidden>Hint</button><button class="btn-ghost sb-solution" type="button">Show solution</button><button class="btn-ghost sb-reset" type="button">Clear</button><span class="res-saved sb-status" aria-live="polite"></span></div>' +
-      '<p class="sb-hinttext" hidden></p></article></div>'; };
+        '<button class="btn-ghost sb-hint" type="button" hidden>Hint</button><button class="btn-ghost sb-solution" type="button">Show solution</button><button class="btn-ghost ask-sensei" type="button">Ask a sensei</button><button class="btn-ghost sb-reset" type="button">Clear</button><span class="res-saved sb-status" aria-live="polite"></span></div>' +
+      '<p class="sb-hinttext" hidden></p><div class="sensei-root"></div></article></div>'; };
 
   window.Dojo = function (c) {
     var S = window.Shinobi, L = c.lessons;
@@ -77,6 +77,43 @@
     var wrap = $(".acad-wrap"), code = $(".sb-code"), out = $(".sb-out"), status = $(".sb-status");
     var hintBtn = $(".sb-hint"), hintText = $(".sb-hinttext"), mc = $(".mc"), sbGrid = $(".sb-grid"), mcStatus = $(".mc-status");
     var current = null, openRank = null, openTopic = null;
+    var ed = window.CodeEditor(code);
+    var solbox = $(".sb-solbox"), solBtn = $(".sb-solution");
+
+    /* ---------- drafts: what you typed is kept per problem, in this browser and on your profile ---------- */
+    function draftKey(p) { return "draft:" + c.field + ":" + p.id; }
+    function loadDraft(p) {
+      var local = null; try { local = localStorage.getItem(draftKey(p)); } catch (e) {}
+      if (local !== null) return local;
+      var d = S.profile && S.profile.drafts && S.profile.drafts[c.field];
+      return d && typeof d[p.id] === "string" ? d[p.id] : null;
+    }
+    var draftTimer = null, draftDirty = false;
+    function storeDraft(now) {
+      if (!current || current.type === "mc" || current.type === "output") return;
+      var p = current, v = ed.value;
+      try { if (v === (p.starter || "")) localStorage.removeItem(draftKey(p)); else localStorage.setItem(draftKey(p), v); } catch (e) {}
+      draftDirty = true; clearTimeout(draftTimer);
+      var flush = function () { if (!draftDirty) return; draftDirty = false; S.saveDraft(c.field, p.id, v).catch(function () {}); };
+      if (now) flush(); else draftTimer = setTimeout(flush, 1500);
+    }
+    code.addEventListener("input", function () { storeDraft(false); });
+    window.addEventListener("pagehide", function () { storeDraft(true); });
+
+    var sensei = window.Sensei.mount($(".sensei-root"), {
+      key: function () { return c.field + "_" + (current ? current.id : "none"); },
+      user: function () { return S.profile && S.profile.name; },
+      context: function () {
+        var p = current || {};
+        var isMC = p.type === "mc" || p.type === "output";
+        var problem = { title: p.title, task: isMC ? (p.type === "output" ? "Read the code and type exactly what it prints." : "Read the code and predict the output.") + "\n\n" + (p.code || "") + "\n\n" + (p.question || "") + (p.choices ? "\nChoices: " + p.choices.join(" | ") : "") : p.task,
+          examples: p.examples || [], prelude: p.prelude || "", hint: p.hint || "",
+          solution: isMC ? (p.type === "output" ? p.expected : "Answer: " + (p.choices ? p.choices[p.answer] : "") + "\n" + (p.explain || "")) : p.solution };
+        var mcIn = $(".mc-input");
+        return { problem: problem, code: isMC ? (mcIn ? mcIn.value : "") : ed.value, output: isMC ? mcStatus.textContent : out.textContent };
+      }
+    });
+    root.querySelectorAll(".ask-sensei").forEach(function (b) { b.addEventListener("click", function () { sfx("sfx-tap", 0.8); sensei.toggle(); }); });
 
     function done(id) { return !!(S.profile && S.profile[c.field] && S.profile[c.field][id]); }
     function save(id) { return S.saveProgress(c.field, id); }
@@ -145,7 +182,8 @@
       mc.hidden = !isMC; sbGrid.hidden = isMC; $(".sb-actions").hidden = isMC;
       hintText.hidden = true; hintText.textContent = "";
       var ex = $(".sb-examples"); ex.innerHTML = ""; ex.hidden = true;
-      var prov = $(".sb-provided"); prov.hidden = !p.prelude; if (p.prelude) prov.querySelector("pre").textContent = p.prelude.trim();
+      var prov = $(".sb-provided"); prov.hidden = !p.prelude; if (p.prelude) prov.querySelector("code").innerHTML = window.CodeEditor.highlight(p.prelude.trim());
+      storeDraft(true); solbox.hidden = true; solBtn.textContent = "Show solution"; sensei.close(); sensei.load();
       if (isMC) {
         $(".sb-task").textContent = p.type === "output" ? "Read the code and type exactly what it prints." : "Read the code and predict the output.";
         $(".mc-code").textContent = p.code; $(".mc-q").textContent = p.question;
@@ -168,25 +206,28 @@
       $(".sb-task").innerHTML = esc(p.task).replace(/`([^`]+)`/g, "<code>$1</code>");
       ex.hidden = !(p.examples && p.examples.length);
       (p.examples || []).forEach(function (e) { var pre = document.createElement("pre"); pre.textContent = e; ex.appendChild(pre); });
-      code.value = p.starter || ""; out.textContent = ""; status.textContent = "";
+      var draft = loadDraft(p);
+      ed.value = draft !== null ? draft : (p.starter || ""); out.textContent = ""; status.textContent = draft !== null && draft !== (p.starter || "") ? "Your earlier work was restored." : "";
       hintBtn.hidden = !p.hint;
       wrap.hidden = false; say([p.say]);
-      loadPy(status).then(function () { status.textContent = ""; }, function () { status.textContent = "Couldn't load the Python runtime."; });
-      code.focus();
+      loadPy(status).then(function () { if (status.textContent === "Loading Python…") status.textContent = ""; }, function () { status.textContent = "Couldn't load the Python runtime."; });
+      ed.focus();
     }
-    function closeSandbox() { wrap.hidden = true; }
+    function closeSandbox() { storeDraft(true); wrap.hidden = true; }
     $(".panel-x").addEventListener("click", closeSandbox);
     wrap.addEventListener("click", function (e) { if (e.target === wrap) closeSandbox(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !wrap.hidden) { e.stopPropagation(); closeSandbox(); } }, true);
-    $(".sb-reset").addEventListener("click", function () { code.value = (current && current.starter) || ""; out.textContent = ""; status.textContent = ""; });
+    $(".sb-reset").addEventListener("click", function () { ed.value = (current && current.starter) || ""; out.textContent = ""; status.textContent = ""; storeDraft(true); });
     hintBtn.addEventListener("click", function () { if (current && current.hint) { hintText.textContent = "Hint: " + current.hint; hintText.hidden = false; say([current.hint]); } });
-    $(".sb-solution").addEventListener("click", function () {
+    solBtn.addEventListener("click", function () {
       if (!current) return;
-      code.value = current.solution; out.textContent = ""; status.textContent = "Solution shown — read it, then try to write it yourself.";
-      say(["Here's one way to do it. Study it, clear the editor, and write it from memory — that's when it sticks."]);
+      sfx("sfx-tap", 0.8);
+      if (!solbox.hidden) { solbox.hidden = true; solBtn.textContent = "Show solution"; return; }
+      solbox.querySelector("code").innerHTML = window.CodeEditor.highlight(current.solution);
+      solbox.hidden = false; solBtn.textContent = "Hide solution";
+      say(["Here's one way to do it. Your code is still in the editor — compare the two, then try to write it yourself."]);
     });
     code.addEventListener("keydown", function (e) {
-      if (e.key === "Tab") { e.preventDefault(); var s = code.selectionStart; code.setRangeText("    ", s, code.selectionEnd, "end"); }
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); run(false); }
     });
 
@@ -215,7 +256,7 @@
     $(".mc-solution").addEventListener("click", function () {
       if (!current) return;
       var ex3 = $(".mc-explain"); ex3.textContent = current.explain; ex3.hidden = false; mcStatus.textContent = "Solution shown."; say([current.explain]);
-      if (current.type === "output") { var ta = $(".mc-input"); ta.value = current.expected; ta.classList.remove("wrong"); ta.classList.add("right"); return; }
+      if (current.type === "output") { ex3.textContent = "It prints:\n" + current.expected + "\n\n" + current.explain; return; }
       root.querySelectorAll(".mc-choice").forEach(function (el, k) { el.classList.toggle("right", k === current.answer); });
     });
 

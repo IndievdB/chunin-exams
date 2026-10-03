@@ -24,6 +24,15 @@
       emit(); return ok();
     };
     api.saveAcademy = function (id) { return api.saveProgress("academy", id); };
+    api.saveDraft = function (field, problemId, code) {
+      var d = Object.assign({}, (api.profile && api.profile.drafts) || {}); var f = Object.assign({}, d[field] || {}); f[problemId] = code; d[field] = f;
+      api.profile = Object.assign({}, api.profile || {}, { drafts: d });
+      try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
+      return ok();
+    };
+    api.saveChat = function (key, data) { try { localStorage.setItem("chat:" + key, JSON.stringify(data)); } catch (e) {} return ok(); };
+    api.loadChat = function (key) { try { return Promise.resolve(JSON.parse(localStorage.getItem("chat:" + key))); } catch (e) { return Promise.resolve(null); } };
+    api.idToken = function () { return Promise.resolve(null); };
     api.saveAvatar = function (avatar) {
       api.profile = Object.assign({}, api.profile || {}, { avatar: avatar });
       try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
@@ -92,6 +101,23 @@
         return F.updateDoc(F.doc(db, "shinobi", auth.currentUser.uid), patch);
       };
       api.saveAcademy = function (id) { return api.saveProgress("academy", id); };
+      // editor drafts live on the profile under drafts.<field>.<problemId>
+      api.saveDraft = function (field, problemId, code) {
+        var d = {}; d[field] = {}; d[field][problemId] = code;
+        return F.setDoc(F.doc(db, "shinobi", auth.currentUser.uid), { drafts: d }, { merge: true });
+      };
+      // Ask-sensei chats are a subcollection so they don't bloat the profile document
+      api.saveChat = function (key, data) {
+        try { localStorage.setItem("chat:" + key, JSON.stringify(data)); } catch (e) {}
+        return F.setDoc(F.doc(db, "shinobi", auth.currentUser.uid, "chats", key), Object.assign({}, data, { updatedAt: F.serverTimestamp() }));
+      };
+      api.loadChat = function (key) {
+        return F.getDoc(F.doc(db, "shinobi", auth.currentUser.uid, "chats", key)).then(function (snap) {
+          if (snap.exists()) return snap.data();
+          try { return JSON.parse(localStorage.getItem("chat:" + key)); } catch (e) { return null; }
+        }, function () { try { return JSON.parse(localStorage.getItem("chat:" + key)); } catch (e) { return null; } });
+      };
+      api.idToken = function () { return auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null); };
       api.signOut = function () { return A.signOut(auth); };
 
       A.onAuthStateChanged(auth, function (u) {

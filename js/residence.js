@@ -12,8 +12,31 @@
   var draft = Object.assign({}, AV.DEFAULT);
 
   function cfgOf(p) { return Object.assign({}, AV.DEFAULT, (p && p.avatar) || {}); }
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+  function fillStats(p) {
+    var R = window.Ranks.progress(p);
+    document.getElementById("res-rank").textContent = R.rank.name; document.getElementById("res-rank-jp").textContent = R.rank.jp;
+    var up = document.getElementById("rank-up");
+    up.innerHTML = '<div class="rank-now"><span class="rank-badge">' + R.rank.name + '</span> <span class="rank-jp">' + R.rank.jp + '</span>' +
+      '<span class="rank-total">' + R.solved + ' / ' + R.total + ' problems solved</span></div>' +
+      (R.next ? '<div class="rank-bar"><i style="--v:' + Math.round(100 * R.toNext) + '%"></i></div><p class="rank-next">' +
+        (R.need === 1 ? '1 more problem' : R.need + ' more problems') + ' to <b>' + R.next.name + '</b> <span class="rank-jp">' + R.next.jp + '</span> (' + R.nextAt + ' solved)</p>'
+        : '<div class="rank-bar"><i style="--v:100%"></i></div><p class="rank-next">You have reached the top. The village is in your debt.</p>');
+    var box = document.getElementById("area-stats"); box.innerHTML = "";
+    R.areas.forEach(function (a) {
+      var d = document.createElement("div"); d.className = "area" + (a.solved === a.total ? " area-done" : "");
+      d.innerHTML = '<div class="area-head"><span class="lesson-k">' + a.kanji + '</span><b>' + esc(a.title) + '</b><span class="area-p">' + a.solved + ' / ' + a.total + ' · ' + pct(a.solved, a.total) + '%</span></div>' +
+        '<ul class="stat-list">' + a.ranks.map(function (r) { return '<li><span><b>' + r.rank + '</b> ' + esc(r.title) + '</span><i style="--v:' + pct(r.solved, r.total) + '%"></i><em>' + r.solved + '/' + r.total + '</em></li>'; }).join("") + '</ul>';
+      box.appendChild(d);
+    });
+    var l = document.createElement("div"); l.className = "area area-locked";
+    l.innerHTML = R.locked.map(function (a) { return '<span class="locked-pill"><span class="lesson-k">' + a.kanji + '</span>' + esc(a.title) + ' · coming soon</span>'; }).join("");
+    box.appendChild(l);
+  }
   function fill() {
     var p = S.profile || {};
+    fillStats(p);
     nameEl.textContent = p.name || "—";
     clanEl.textContent = p.clan && p.clan !== "No clan" ? p.clan + " clan" : "No clan";
     nameIn.value = p.name || ""; clanIn.value = p.clan || "No clan";
@@ -31,7 +54,6 @@
   res.querySelectorAll(".hotspot").forEach(function (b) {
     b.addEventListener("click", function () {
       var a = document.getElementById("sfx-select").cloneNode(); a.volume = 0.8 * (document.getElementById("audio").muted ? 0 : document.getElementById("audio").volume); a.play().catch(function () {});
-      if (b.dataset.panel === "stats") { window.openUnderConstruction("Stats"); return; }
       openPanel(b.dataset.panel);
     });
   });

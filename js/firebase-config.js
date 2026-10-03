@@ -10,3 +10,8 @@ window.FIREBASE_CONFIG = {
   appId: "1:891805765769:web:b8380182df7b0a4dd67658",
   measurementId: "G-S58V1VX3PB"
 };
+
+// Ask Sensei server (server/sensei.js). Set this to the URL of the deployed "hidden-leaf-sensei"
+// web service on Render, e.g. "https://hidden-leaf-sensei.onrender.com". Leave null to disable;
+// on localhost the site falls back to http://localhost:8787.
+window.SENSEI_URL = null;

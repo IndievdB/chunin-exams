@@ -8,11 +8,16 @@ service cloud.firestore {
         && (!("avatar" in request.resource.data) || request.resource.data.avatar is map)
         && (!("academy" in request.resource.data) || request.resource.data.academy is map)
         && (!("training" in request.resource.data) || request.resource.data.training is map)
+        && (!("drafts" in request.resource.data) || request.resource.data.drafts is map)
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 24
         && request.resource.data.clan is string && request.resource.data.clan.size() <= 24
         && (!("email" in request.resource.data) || request.resource.data.email == null || request.resource.data.email == request.auth.token.email);
       allow delete: if false;
+      // Ask-sensei chat logs, one document per problem
+      match /chats/{chat} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
     }
   }
 }

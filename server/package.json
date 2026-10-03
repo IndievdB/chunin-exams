@@ -1,0 +1,10 @@
+{
+  "name": "hidden-leaf-sensei",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ask Sensei proxy for the Hidden Leaf coding dojo",
+  "main": "sensei.js",
+  "scripts": { "start": "node sensei.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "@anthropic-ai/sdk": "^0.131.0" }
+}

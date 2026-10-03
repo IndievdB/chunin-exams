@@ -6,7 +6,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 
 | Menu | Route |
 |---|---|
-| Residence | `#residence` — your shinobi's room: rank, name/clan editing, stats, and the character creator |
+| Residence | `#residence` — your shinobi's room: the Ninja Info Card (name, clan, rank), progress and rank-up tracker (`js/ranks.js`), and the character creator |
 | Academy | `#academy` — Iruka-sensei's Python fundamentals: lessons with auto-checked problems in an in-browser sandbox |
 | Training Grounds | `#training` — Rock Lee's data-structures dojo: hash maps, linked lists, stacks, queues, heaps, trees, graphs/grids, DP |
 | Missions | `#missions` |
@@ -51,6 +51,22 @@ Until a config is present the site runs in offline mode and keeps the profile in
 ## Dojos (Academy and Training Grounds)
 
 Both lesson screens are instances of `js/dojo.js`, configured in `js/dojos.js` (background, teacher sprite, curriculum, profile field). The Academy uses `js/lessons.js` (Python fundamentals, Iruka) and the Training Grounds use `js/jutsu.js` (data structures, Rock Lee). Progress is saved on the profile under `academy` and `training`.
+
+### The sandbox editor
+
+The code box (`js/editor.js`) highlights Python, keeps indentation on Enter, turns tabs into four spaces (including pasted code), and indents or outdents every selected line with **Tab** / **Shift+Tab**. **Ctrl+Enter** runs. Whatever you type is saved per problem (in the browser and under `drafts` on your profile) so closing the panel or the tab loses nothing; **Clear** resets to the starter. **Show solution** opens a read-only solution beside your code instead of replacing it.
+
+### Ask a sensei
+
+Every problem has an **Ask a sensei** button: a chat where Kakashi, Jiraiya, Itachi, Ebisu, Konohamaru or Orochimaru answer questions about the task, your code or Python in their own (exaggerated) voice. They see the problem, your code and your last output, and are told to teach rather than hand over the answer unless you ask for it outright. Chats are saved per problem (profile subcollection `shinobi/{uid}/chats` plus the browser) so you can pick them up later.
+
+The chat goes through a small server that holds the Anthropic API key, `server/sensei.js`:
+
+1. `render.yaml` describes it as the `hidden-leaf-sensei` Node web service (free plan; the first message after a quiet spell can take a few seconds while it wakes up). In Render set its environment variables: `ANTHROPIC_API_KEY`, `FIREBASE_WEB_API_KEY` (the `apiKey` from `js/firebase-config.js`, used to check that the caller is signed in), and `ALLOWED_ORIGIN` (the static site's URL).
+2. Put the service URL in `window.SENSEI_URL` in `js/firebase-config.js`.
+3. Locally: `cd server && npm install && ANTHROPIC_API_KEY=… node sensei.js` and the site on localhost will use it automatically (no sign-in check when `FIREBASE_WEB_API_KEY` is unset).
+
+Teacher voices and the shared tutoring rules live in `server/teachers.js`.
 
 ## Academy (Python lessons)
 

@@ -442,3 +442,77 @@ body.modal .player, body.modal .player.mini { background: none; }
   .title .ch { animation-duration: .01s !important; }
   .cloud { animation: none; opacity: .9; }
 }
+
+/* ---------- code editor (textarea over a highlighted layer) ---------- */
+.ed { position: relative; height: 320px; resize: vertical; overflow: hidden; border: 2px solid #2a3b4d; border-radius: 8px; background: #0a1420; }
+.ed:focus-within { border-color: var(--gold); }
+.ed .ed-ta, .ed .ed-hl { position: absolute; inset: 0; margin: 0; padding: 12px; box-sizing: border-box; font: 15px/1.5 ui-monospace, Menlo, Consolas, monospace; tab-size: 4; white-space: pre; word-wrap: normal; overflow: auto; border: 0; border-radius: 0; height: auto; resize: none; }
+.ed .ed-ta { background: transparent; color: transparent; caret-color: #ffe9a8; z-index: 1; outline: none; }
+.ed .ed-ta::selection { background: rgba(255,179,0,.3); }
+.ed .ed-hl { color: #e8f1ff; pointer-events: none; overflow: hidden; }
+.ed .ed-hl code { font: inherit; }
+.tk-kw { color: #ff79c6; } .tk-bi { color: #8be9fd; } .tk-str { color: #f1fa8c; } .tk-com { color: #6f8aa6; font-style: italic; }
+.tk-num { color: #bd93f9; } .tk-def { color: #50fa7b; } .tk-fn { color: #9fd8ff; } .tk-op { color: #ffb86c; } .tk-dec { color: #ffd54a; }
+.sb-provided pre code, .sb-sol code { font: inherit; }
+.sb-solbox { margin-top: 14px; }
+.sb-solbox[hidden] { display: none; }
+.sb-solbox .sb-label small { text-transform: none; letter-spacing: 0; color: #9fb3c8; }
+.sb-sol { margin: 0; font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; color: #e8f1ff; background: #0a1420; border: 2px dashed #3b5a7a; border-radius: 8px; padding: 12px; overflow: auto; max-height: 360px; white-space: pre; }
+
+/* ---------- ask a sensei ---------- */
+.sensei { margin-top: 18px; border-top: 1px solid rgba(255,255,255,.12); padding-top: 14px; }
+.sensei[hidden] { display: none; }
+.sensei-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 10px; }
+.sensei-head .sb-label { margin: 0; }
+.sensei-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.sensei-t { font: inherit; font-size: 13px; letter-spacing: 1px; color: #cfe3f5; background: rgba(255,255,255,.06); border: 2px solid transparent; border-radius: 999px; padding: 4px 12px 4px 6px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.sensei-t:hover { border-color: rgba(255,179,0,.5); }
+.sensei-t.on { border-color: var(--gold); background: rgba(255,179,0,.14); color: #fff; }
+.sensei-k { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; font-size: 12px; border: 1px solid #3b1a00; }
+.sensei-log { max-height: 340px; overflow: auto; display: grid; gap: 10px; padding: 10px; background: rgba(0,0,0,.25); border: 1px solid #2a3b4d; border-radius: 8px; }
+.sensei-empty { margin: 0; color: #9fb3c8; font-size: 14px; }
+.chat { max-width: 85%; }
+.chat.me { justify-self: end; }
+.chat-who { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin: 0 0 3px 4px; }
+.chat.me .chat-who { text-align: right; margin-right: 4px; }
+.chat-body { background: rgba(255,255,255,.07); border-radius: 12px; padding: 8px 12px; font-size: 15px; line-height: 1.5; }
+.chat.me .chat-body { background: rgba(255,179,0,.16); border: 1px solid rgba(255,179,0,.35); }
+.chat.typing .chat-body { color: #9fb3c8; animation: pulse 1s ease-in-out infinite alternate; }
+@keyframes pulse { to { opacity: .4; } }
+.chat-body p { margin: 0 0 6px; } .chat-body p:last-child { margin-bottom: 0; }
+.chat-body ul { margin: 0 0 6px; padding-left: 20px; }
+.chat-body code { background: rgba(0,0,0,.35); padding: 1px 5px; border-radius: 4px; font: 13.5px ui-monospace, Menlo, Consolas, monospace; color: #ffe9a8; }
+.chat-code { margin: 6px 0; font: 13.5px/1.5 ui-monospace, Menlo, Consolas, monospace; background: #0a1420; border: 1px solid #2a3b4d; border-radius: 6px; padding: 8px 10px; overflow: auto; white-space: pre; color: #e8f1ff; }
+.chat-code code { background: none; padding: 0; font: inherit; color: inherit; }
+.sensei-form { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 10px; }
+.sensei-in { font: inherit; font-size: 15px; color: #e8f1ff; background: #0a1420; border: 2px solid #2a3b4d; border-radius: 8px; padding: 8px 12px; resize: vertical; min-height: 44px; }
+.sensei-in:focus { border-color: var(--gold); outline: none; }
+.sensei.busy .sensei-in { opacity: .6; }
+.sensei-note { margin: 8px 0 0; color: #ff8a80; font-size: 14px; min-height: 1em; }
+
+/* ---------- residence progress ---------- */
+.rank-up { margin-bottom: 16px; }
+.rank-now { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.rank-total { color: #9fb3c8; font-size: 14px; letter-spacing: 1px; margin-left: auto; }
+.rank-bar { height: 14px; border-radius: 7px; background: rgba(255,255,255,.12); overflow: hidden; border: 1px solid rgba(255,255,255,.15); }
+.rank-bar i { display: block; height: 100%; width: var(--v); background: linear-gradient(90deg, var(--red), var(--gold)); transition: width .6s ease; }
+.rank-next { margin: 8px 0 0; font-size: 15px; color: #cfe3f5; }
+.rank-next b { color: var(--gold); }
+.area-stats { display: grid; gap: 12px; }
+.area { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 12px 14px; }
+.area-done { border-color: rgba(123,216,143,.5); }
+.area-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 16px; letter-spacing: 1px; }
+.area-head .lesson-k { font-size: 14px; }
+.area-p { margin-left: auto; color: #9fb3c8; font-size: 13px; }
+.area .stat-list li { grid-template-columns: 210px 1fr 48px; }
+.area .stat-list li span b { color: var(--gold); margin-right: 4px; }
+.area .stat-list em { font-style: normal; font-size: 12px; color: #9fb3c8; text-align: right; }
+.area-locked { display: flex; flex-wrap: wrap; gap: 8px; background: none; border-style: dashed; }
+.locked-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #9fb3c8; letter-spacing: 1px; }
+.locked-pill .lesson-k { font-size: 12px; opacity: .7; }
+@media (max-width: 640px) {
+  .area .stat-list li { grid-template-columns: 1fr; gap: 4px; }
+  .area .stat-list em { text-align: left; }
+  .sensei-form { grid-template-columns: 1fr; }
+  .chat { max-width: 100%; }
+}

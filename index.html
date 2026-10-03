@@ -60,7 +60,7 @@
     <p class="res-hint">Click around the room.</p>
     <div class="room">
       <button class="hotspot" data-panel="profile" style="--x:67%;--y:17%" type="button"><span class="hs-dot">名</span><span class="hs-label">Nightstand · name &amp; clan</span></button>
-      <button class="hotspot" data-panel="stats" style="--x:78%;--y:52%" type="button"><span class="hs-dot">力</span><span class="hs-label">Bed · stats</span></button>
+      <button class="hotspot" data-panel="stats" style="--x:78%;--y:52%" type="button"><span class="hs-dot">力</span><span class="hs-label">Bed · progress</span></button>
       <button class="hotspot" data-panel="look" style="--x:21%;--y:47%" type="button"><span class="hs-dot">姿</span><span class="hs-label">Cabinet · appearance</span></button>
       <div class="room-me" id="room-me" aria-hidden="true"></div>
     </div>
@@ -68,11 +68,11 @@
     <div class="panel-wrap" id="panel-wrap" hidden>
       <article class="res-card panel" data-panel="profile" hidden>
         <button class="panel-x" type="button" aria-label="Close">✕</button>
-        <h3>Shinobi Record</h3>
+        <h3>Ninja Info Card</h3>
         <div class="res-id">
           <div class="res-avatar" id="res-avatar"></div>
           <div class="res-idtext">
-            <p class="res-rank"><span class="rank-badge">Student</span> <span class="rank-jp">生徒</span></p>
+            <p class="res-rank"><span class="rank-badge" id="res-rank">Student</span> <span class="rank-jp" id="res-rank-jp">生徒</span></p>
             <h3 class="res-name" id="res-name">—</h3>
             <p class="res-clan" id="res-clan"></p>
             <form class="res-form" id="res-form">
@@ -86,18 +86,10 @@
       </article>
       <article class="res-card panel res-stats" data-panel="stats" hidden>
         <button class="panel-x" type="button" aria-label="Close">✕</button>
-        <h3>Stats <span class="wip">in progress</span></h3>
-        <ul class="stat-list">
-          <li><span>Ninjutsu</span><i style="--v:20%"></i></li>
-          <li><span>Taijutsu</span><i style="--v:35%"></i></li>
-          <li><span>Genjutsu</span><i style="--v:10%"></i></li>
-          <li><span>Intelligence</span><i style="--v:30%"></i></li>
-          <li><span>Strength</span><i style="--v:25%"></i></li>
-          <li><span>Speed</span><i style="--v:30%"></i></li>
-          <li><span>Stamina</span><i style="--v:45%"></i></li>
-          <li><span>Hand seals</span><i style="--v:15%"></i></li>
-        </ul>
-        <p class="res-note">Stats will grow with training, missions and exams.</p>
+        <h3>Progress</h3>
+        <div class="rank-up" id="rank-up"></div>
+        <div class="area-stats" id="area-stats"></div>
+        <p class="res-note">Solve problems anywhere in the village to rank up. Every rank gives new areas something to say about you.</p>
       </article>
       <article class="res-card panel res-creator" data-panel="look" hidden>
         <button class="panel-x" type="button" aria-label="Close">✕</button>
@@ -241,6 +233,9 @@
   <script src="js/residence.js"></script>
   <script src="js/lessons.js"></script>
   <script src="js/jutsu.js"></script>
+  <script src="js/ranks.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/sensei.js"></script>
   <script src="js/dojo.js"></script>
   <script src="js/dojos.js"></script>
   <script src="js/menu.js"></script>

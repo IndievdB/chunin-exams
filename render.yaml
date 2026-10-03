@@ -12,3 +12,17 @@ services:
       - path: /assets/*
         name: Cache-Control
         value: public, max-age=86400
+  - type: web
+    name: hidden-leaf-sensei
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node sensei.js
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: FIREBASE_WEB_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGIN
+        sync: false
