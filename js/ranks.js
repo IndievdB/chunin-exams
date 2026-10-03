@@ -16,8 +16,7 @@
   ];
   var LOCKED = [
     { title: "Missions",     kanji: "任" },
-    { title: "Ninja Exams",  kanji: "試" },
-    { title: "Hokage Tower", kanji: "火" }
+    { title: "Ninja Exams",  kanji: "試" }
   ];
 
   function problemsOf(rank) { var r = []; rank.topics.forEach(function (t) { r = r.concat(t.problems); }); return r; }
@@ -36,15 +35,16 @@
       return { id: a.id, title: a.title, kanji: a.kanji, ranks: ranks, solved: sv, total: at };
     });
     var thresholds = TIERS.map(function (t) { return Math.ceil(t.at * total); });
-    var tier = 0;
+    var tier = 0, pinned = false;
     for (var i = 0; i < TIERS.length; i++) if (solved >= thresholds[i]) tier = i;
+    TIERS.forEach(function (t, i) { if (profile.rankOverride === t.name) { tier = i; pinned = true; } });
     var next = tier + 1 < TIERS.length ? TIERS[tier + 1] : null;
-    var need = next ? thresholds[tier + 1] - solved : 0;
+    var need = next ? Math.max(0, thresholds[tier + 1] - solved) : 0;
     var span = next ? thresholds[tier + 1] - thresholds[tier] : 1;
     return {
       solved: solved, total: total, areas: areas, locked: LOCKED,
-      rank: TIERS[tier], next: next, need: need,
-      toNext: next ? (solved - thresholds[tier]) / span : 1,
+      rank: TIERS[tier], next: next, need: need, pinned: pinned,
+      toNext: next ? Math.max(0, Math.min(1, (solved - thresholds[tier]) / span)) : 1,
       nextAt: next ? thresholds[tier + 1] : total
     };
   }

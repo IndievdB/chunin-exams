@@ -72,6 +72,7 @@
     if (item.getAttribute("href") === "#residence") { window.Residence.open(); document.body.classList.add("modal"); window.setMusicArea("residence"); return; }
     if (item.getAttribute("href") === "#academy") { window.Academy.open(); document.body.classList.add("modal"); window.setMusicArea("academy"); return; }
     if (item.getAttribute("href") === "#training") { window.Training.open(); document.body.classList.add("modal"); window.setMusicArea("training"); return; }
+    if (item.getAttribute("href") === "#hokage") { window.HokageTower.open(); document.body.classList.add("modal"); return; }
     ucWhere.textContent = item.textContent;
     document.querySelector(".uc-back").lastChild.textContent = "Back to the village";
     uc.hidden = false; document.body.classList.add("modal");
@@ -79,7 +80,7 @@
   }
   function closeUC() {
     if (!uc.hidden && !document.getElementById("residence").hidden) { uc.hidden = true; return; } // stats popup inside the room: back to the room
-    uc.hidden = true; window.Residence.close(); window.Academy.close(); window.Training.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
+    uc.hidden = true; window.Residence.close(); window.Academy.close(); window.Training.close(); window.HokageTower.close(); document.body.classList.remove("modal"); window.setMusicArea("village");
     if (location.hash) history.replaceState(null, "", location.pathname);
     if (current) current.focus();
   }
@@ -366,7 +367,7 @@
     document.getElementById("login-account").textContent = acct;
     setTimeout(function () { loginName.focus(); }, 50);
   }
-  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden && document.getElementById("academy").hidden && document.getElementById("training").hidden) document.body.classList.remove("modal"); }
+  function closeLogin() { login.hidden = true; if (uc.hidden && document.getElementById("residence").hidden && document.getElementById("academy").hidden && document.getElementById("training").hidden && document.getElementById("hokage").hidden) document.body.classList.remove("modal"); }
 
   // step 1: account
   authForm.addEventListener("submit", function (e) { e.preventDefault(); doAuth("signin"); });

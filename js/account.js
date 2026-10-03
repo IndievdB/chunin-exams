@@ -6,6 +6,7 @@
 (function () {
   "use strict";
   var LS_KEY = "shinobi-profile";
+  var ADMIN_EMAIL = "indievdb@gmail.com";   // the Hokage: may edit anyone's progress and rank (enforced by firestore.rules too)
   var listeners = [];
   var api = { user: null, profile: null, online: false, onChange: function (fn) { listeners.push(fn); } };
   function emit() { listeners.forEach(function (fn) { fn(api); }); }
@@ -33,6 +34,18 @@
     api.saveChat = function (key, data) { try { localStorage.setItem("chat:" + key, JSON.stringify(data)); } catch (e) {} return ok(); };
     api.loadChat = function (key) { try { return Promise.resolve(JSON.parse(localStorage.getItem("chat:" + key))); } catch (e) { return Promise.resolve(null); } };
     api.idToken = function () { return Promise.resolve(null); };
+    api.listShinobi = function () { return Promise.resolve(api.profile ? [Object.assign({ uid: "local" }, api.profile)] : []); };
+    api.adminSetProblems = function (uid, field, ids, on) {
+      var f = Object.assign({}, (api.profile && api.profile[field]) || {}); ids.forEach(function (id) { if (on) f[id] = true; else delete f[id]; });
+      var patch = {}; patch[field] = f; api.profile = Object.assign({}, api.profile || {}, patch);
+      try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
+      emit(); return ok();
+    };
+    api.adminSetRank = function (uid, rank) {
+      api.profile = Object.assign({}, api.profile || {}); if (rank) api.profile.rankOverride = rank; else delete api.profile.rankOverride;
+      try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
+      emit(); return ok();
+    };
     api.saveAvatar = function (avatar) {
       api.profile = Object.assign({}, api.profile || {}, { avatar: avatar });
       try { localStorage.setItem(LS_KEY, JSON.stringify(api.profile)); } catch (e) {}
@@ -51,6 +64,7 @@
     resolve(api);
   }
 
+  api.isAdmin = function () { return !!(api.user && api.user.email === ADMIN_EMAIL); };
   api.ready = new Promise(function (resolve) {
     if (!window.FIREBASE_CONFIG) return localMode(resolve);
     Promise.all([
@@ -118,6 +132,21 @@
         }, function () { try { return JSON.parse(localStorage.getItem("chat:" + key)); } catch (e) { return null; } });
       };
       api.idToken = function () { return auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null); };
+      // everyone on the site, for the Hokage Tower
+      api.listShinobi = function () {
+        return F.getDocs(F.collection(db, "shinobi")).then(function (qs) {
+          var out = []; qs.forEach(function (d) { out.push(Object.assign({ uid: d.id }, d.data())); }); return out;
+        });
+      };
+      // Hokage-only edits of another shinobi's record (firestore.rules checks the email)
+      api.adminSetProblems = function (uid, field, ids, on) {
+        var patch = { updatedAt: F.serverTimestamp() };
+        ids.forEach(function (id) { patch[field + "." + id] = on ? true : F.deleteField(); });
+        return F.updateDoc(F.doc(db, "shinobi", uid), patch);
+      };
+      api.adminSetRank = function (uid, rank) {
+        return F.updateDoc(F.doc(db, "shinobi", uid), { rankOverride: rank ? rank : F.deleteField(), updatedAt: F.serverTimestamp() });
+      };
       api.signOut = function () { return A.signOut(auth); };
 
       A.onAuthStateChanged(auth, function (u) {

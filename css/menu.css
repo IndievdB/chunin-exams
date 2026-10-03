@@ -516,3 +516,48 @@ body.modal .player, body.modal .player.mini { background: none; }
   .sensei-form { grid-template-columns: 1fr; }
   .chat { max-width: 100%; }
 }
+
+/* ---------- Hokage Tower: everyone's Ninja Info Card ---------- */
+.hk-list { align-self: stretch; max-height: 100%; overflow: auto; display: grid; align-content: start; gap: 10px; padding: 4px 6px 4px 12px; scrollbar-width: thin; }
+.hk-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.hk-count { color: #cfe3f5; font-size: 14px; letter-spacing: 1px; }
+.hk-admin { margin-left: auto; font: inherit; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #ffe9a8; background: rgba(255,255,255,.06); border: 2px solid rgba(255,179,0,.5); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.hk-admin[aria-pressed="true"] { background: var(--gold); color: #3b1a00; border-color: #3b1a00; }
+.hk-card { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: start; background: rgba(13,27,40,.92); border: 2px solid rgba(255,179,0,.55); border-radius: 12px; padding: 10px 12px; }
+.hk-card.me { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(255,179,0,.35); }
+.hk-avatar { aspect-ratio: 200 / 240; background: linear-gradient(#1f3b5e, #0d1b28); border: 2px solid #3b5a7a; border-radius: 8px; overflow: hidden; }
+.hk-avatar svg { width: 100%; height: 100%; display: block; }
+.hk-name { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.hk-name b { font-family: var(--display); font-size: 18px; letter-spacing: 1px; color: #fff; }
+.hk-name span { color: #9fb3c8; font-size: 13px; letter-spacing: 1px; }
+.hk-rank { display: flex; align-items: center; gap: 8px; margin: 4px 0 6px; flex-wrap: wrap; }
+.hk-rank .rank-badge { font-size: 13px; padding: 2px 10px; }
+.hk-rank .rank-jp { color: #ffe9a8; font-size: 13px; }
+.hk-pinned { font-size: 11px; letter-spacing: 1px; color: #3b1a00; background: #ffd54a; border-radius: 4px; padding: 1px 6px; }
+.hk-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.12); overflow: hidden; margin-bottom: 4px; }
+.hk-bar i { display: block; height: 100%; width: var(--v); background: linear-gradient(90deg, var(--red), var(--gold)); }
+.hk-areas { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: #cfe3f5; letter-spacing: .5px; }
+.hk-areas b { color: var(--gold); font-weight: normal; }
+.hk-edit { grid-column: 1 / -1; border-top: 1px dashed rgba(255,255,255,.2); padding-top: 8px; margin-top: 4px; display: grid; gap: 8px; }
+.hk-edit[hidden] { display: none; }
+.hk-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: #cfe3f5; }
+.hk-row label { color: #ffe9a8; letter-spacing: 1px; }
+.hk-row select { font: inherit; font-size: 13px; background: #0a1420; color: #fff; border: 1px solid #3b5a7a; border-radius: 6px; padding: 3px 6px; }
+.hk-mini { font: inherit; font-size: 12px; letter-spacing: 1px; padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255,179,0,.5); background: none; color: #ffe9a8; cursor: pointer; }
+.hk-mini:hover { background: rgba(255,179,0,.15); }
+.hk-rankrow { display: grid; grid-template-columns: 170px 1fr auto auto auto; gap: 8px; align-items: center; font-size: 13px; }
+.hk-rankrow b { color: var(--gold); margin-right: 4px; }
+.hk-problems { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
+.hk-problems[hidden] { display: none; }
+.hk-p { font: inherit; font-size: 11px; padding: 2px 7px; border-radius: 4px; border: 1px solid #3b5a7a; background: rgba(255,255,255,.04); color: #cfe3f5; cursor: pointer; }
+.hk-p.on { background: rgba(123,216,143,.2); border-color: #7bd88f; color: #fff; }
+.hk-status { color: #9fb3c8; font-size: 12px; }
+.hk-empty { color: #cfe3f5; padding: 12px; }
+@media (max-width: 760px) { .hk-rankrow { grid-template-columns: 1fr; } }
+#hokage .acad-body { grid-template-columns: minmax(0, 1fr) minmax(320px, 680px); }
+#hokage .hk-list { padding-right: 8px; }
+.hk-rankrow { grid-template-columns: minmax(150px, 1fr) 54px auto auto auto; }
+.hk-rankrow .hk-status { white-space: nowrap; }
+.hk-mini { white-space: nowrap; }
+.hk-count { white-space: nowrap; }
+@media (max-width: 760px) { .hk-rankrow { grid-template-columns: 1fr 1fr; } }

@@ -11,7 +11,7 @@ A static website themed around the Hidden Leaf Village (Konoha). It needs no bui
 | Training Grounds | `#training` — Rock Lee's data-structures dojo: hash maps, linked lists, stacks, queues, heaps, trees, graphs/grids, DP |
 | Missions | `#missions` |
 | Ninja Exams | `#exams` |
-| Hokage Tower | `#hokage` |
+| Hokage Tower | `#hokage` — the Third Hokage's office: every shinobi's Ninja Info Card and progress. The admin account (email in `js/account.js`, enforced by `firestore.rules`) gets an **Admin** toggle to grant or remove progress per rank or per problem and to pin a rank |
 
 The avatar is drawn as layered inline SVG (`js/avatar.js`): skin, hair style and colour, eyes, headband colour, outfit and markings, saved on the Firestore profile as an `avatar` map. Add new looks by extending `OPTIONS` and the matching draw function.
 

@@ -13,6 +13,12 @@ service cloud.firestore {
         && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 24
         && request.resource.data.clan is string && request.resource.data.clan.size() <= 24
         && (!("email" in request.resource.data) || request.resource.data.email == null || request.resource.data.email == request.auth.token.email);
+      // The Hokage (admin) may grant or remove progress and pin a rank on any record, nothing else.
+      allow update: if request.auth != null && request.auth.token.email == "indievdb@gmail.com"
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["academy", "training", "rankOverride", "updatedAt"])
+        && (!("academy" in request.resource.data) || request.resource.data.academy is map)
+        && (!("training" in request.resource.data) || request.resource.data.training is map)
+        && (!("rankOverride" in request.resource.data) || request.resource.data.rankOverride in ["Student", "Genin", "Chunin", "Jonin", "Kage"]);
       allow delete: if false;
       // Ask-sensei chat logs, one document per problem
       match /chats/{chat} {
