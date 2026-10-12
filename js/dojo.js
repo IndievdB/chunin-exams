@@ -97,10 +97,11 @@
     /* ---------- drafts: what you typed is kept per problem, in this browser and on your profile ---------- */
     function draftKey(p) { return "draft:" + c.field + ":" + p.id; }
     function loadDraft(p) {
+      // an empty editor is never worth restoring: fall back to the starter
       var local = null; try { local = localStorage.getItem(draftKey(p)); } catch (e) {}
-      if (local !== null) return local;
+      if (local !== null && local.trim()) return local;
       var d = S.profile && S.profile.drafts && S.profile.drafts[c.field];
-      return d && typeof d[p.id] === "string" ? d[p.id] : null;
+      return d && typeof d[p.id] === "string" && d[p.id].trim() ? d[p.id] : null;
     }
     var draftTimer = null, draftDirty = false;
     function storeDraft(now) {
@@ -190,6 +191,7 @@
 
     /* ---------- problem panel ---------- */
     function openProblem(rank, topic, p) {
+      storeDraft(true);          // save the problem we're leaving BEFORE switching, or its code lands under the new key
       current = p;
       $(".sb-title").textContent = RANK_NAMES[rank.rank] + " · " + p.title;
       var isMC = p.type === "mc" || p.type === "output", isGuide = p.type === "guide";
@@ -198,7 +200,7 @@
       hintText.hidden = true; hintText.textContent = "";
       var ex = $(".sb-examples"); ex.innerHTML = ""; ex.hidden = true;
       var prov = $(".sb-provided"); prov.hidden = !p.prelude; if (p.prelude) prov.querySelector("code").innerHTML = window.CodeEditor.highlight(p.prelude.trim());
-      storeDraft(true); solbox.hidden = true; solBtn.textContent = "Show solution"; sensei.close(); sensei.load();
+      solbox.hidden = true; solBtn.textContent = "Show solution"; sensei.close(); sensei.load();
       if (isMC) {
         $(".sb-task").textContent = p.type === "output" ? "Read the code and type exactly what it prints." : "Read the code and predict the output.";
         $(".mc-code").textContent = p.code; $(".mc-q").textContent = p.question;
